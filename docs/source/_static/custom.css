@@ -1,0 +1,121 @@
+/* Custom CSS for Aitask Notify Hook documentation */
+
+/* Improve code block styling */
+.highlight {
+    background: #f8f8f8;
+    border: 1px solid #e1e4e5;
+    border-radius: 4px;
+    padding: 8px;
+    margin: 8px 0;
+}
+
+/* Better table styling */
+.rst-content table.docutils {
+    border: 1px solid #e1e4e5;
+    border-collapse: collapse;
+    margin: 16px 0;
+}
+
+.rst-content table.docutils th,
+.rst-content table.docutils td {
+    border: 1px solid #e1e4e5;
+    padding: 8px 12px;
+}
+
+.rst-content table.docutils th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+/* Improve admonition styling */
+.rst-content .admonition {
+    margin: 16px 0;
+    padding: 12px;
+    border-left: 4px solid #007acc;
+    background-color: #f8f9fa;
+    border-radius: 0 4px 4px 0;
+}
+
+.rst-content .admonition.note {
+    border-left-color: #007acc;
+}
+
+.rst-content .admonition.warning {
+    border-left-color: #ff9800;
+}
+
+.rst-content .admonition.tip {
+    border-left-color: #4caf50;
+}
+
+/* Better API documentation styling */
+.rst-content dl.py > dt {
+    background-color: #f8f9fa;
+    border: 1px solid #e1e4e5;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-top: 16px;
+    font-family: 'Roboto Mono', 'Consolas', monospace;
+}
+
+.rst-content dl.py > dd {
+    margin-left: 24px;
+    margin-bottom: 16px;
+}
+
+/* Improve navigation */
+.wy-nav-content {
+    max-width: 1000px;
+}
+
+/* Better mobile responsiveness */
+@media screen and (max-width: 768px) {
+    .wy-nav-content {
+        margin-left: 0;
+    }
+
+    .wy-nav-side {
+        left: -300px;
+    }
+}
+
+/* Code snippet improvements */
+.rst-content .literal {
+    background-color: #f8f8f8;
+    border: 1px solid #e1e4e5;
+    border-radius: 3px;
+    padding: 2px 4px;
+    font-family: 'Roboto Mono', 'Consolas', monospace;
+    font-size: 85%;
+    color: #d63384;
+}
+
+/* Table of contents improvements */
+.toctree-wrapper ul {
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+.toctree-wrapper > ul {
+    padding-left: 0;
+}
+
+/* Version information styling */
+.version {
+    font-style: italic;
+    color: #6c757d;
+}
+
+/* Badge styling for the index page */
+.rst-content img[alt*="PyPI"],
+.rst-content img[alt*="Python"],
+.rst-content img[alt*="Code Style"] {
+    margin: 2px;
+}
+
+/* Footer improvements */
+.rst-footer-buttons {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid #e1e4e5;
+}

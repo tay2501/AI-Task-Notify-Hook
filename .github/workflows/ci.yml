@@ -1,0 +1,153 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PYTHON_VERSION: '3.12'
+
+jobs:
+  test:
+    name: Test on ${{ matrix.os }} - Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.12', '3.13']
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        enable-cache: true
+        cache-dependency-glob: |
+          **/pyproject.toml
+          **/uv.lock
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: uv sync --dev
+
+    - name: Check packages can be imported
+      run: |
+        uv run python -c "import notify; print('✓ notify module imported')"
+        uv run python -c "import log_config; print('✓ log_config module imported')"
+        uv run python -c "import config_loader; print('✓ config_loader module imported')"
+
+    - name: Test configuration system
+      run: |
+        uv run python -c "
+        from config_loader import load_config, validate_config_file
+        print('Testing configuration system...')
+        try:
+            # Test configuration loading
+            config = load_config()
+            print(f'✓ Config loaded: app_name={config.notification.app_name}')
+
+            # Test configuration validation
+            is_valid = validate_config_file()
+            print(f'✓ Config validation: {is_valid}')
+
+            print('✓ Configuration system working')
+        except Exception as e:
+            print(f'✗ Configuration error: {e}')
+            exit(1)
+        "
+
+    - name: Test logging system
+      run: |
+        uv run python -c "
+        from log_config import configure_logging, get_logger
+        print('Testing logging system...')
+        try:
+            configure_logging()
+            logger = get_logger('test')
+            logger.info('Test log message', test_param='value')
+            print('✓ Logging system working')
+        except Exception as e:
+            print(f'✗ Logging error: {e}')
+            exit(1)
+        "
+
+  lint:
+    name: Lint and Format Check
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        enable-cache: true
+        cache-dependency-glob: |
+          **/pyproject.toml
+          **/uv.lock
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: uv sync --dev
+
+    - name: Add development dependencies
+      run: |
+        uv add --dev ruff mypy
+
+    - name: Run ruff check
+      run: uv run ruff check .
+
+    - name: Run ruff format check
+      run: uv run ruff format --check .
+
+    - name: Run mypy type checking
+      run: uv run mypy notify.py log_config.py config_loader.py --ignore-missing-imports
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        enable-cache: true
+        cache-dependency-glob: |
+          **/pyproject.toml
+          **/uv.lock
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: uv sync --dev
+
+    - name: Add security tools
+      run: |
+        uv add --dev bandit safety
+
+    - name: Run bandit security linter
+      run: uv run bandit -r . -f json -o bandit-report.json || true
+
+    - name: Upload bandit report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: bandit-report
+        path: bandit-report.json
+
+    - name: Run safety check
+      run: uv run safety check --json --output safety-report.json || true
+
+    - name: Upload safety report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: safety-report
+        path: safety-report.json

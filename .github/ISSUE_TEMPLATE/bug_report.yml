@@ -1,0 +1,104 @@
+name: Bug Report
+description: Report a bug or issue with Aitask-Notify-Hook
+title: "[Bug]: "
+labels: ["bug", "triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: What version of Aitask-Notify-Hook are you running?
+      placeholder: e.g., v1.0.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      description: What operating system are you using?
+      options:
+        - Windows 10
+        - Windows 11
+        - Other Windows version
+      default: 0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: python-version
+    attributes:
+      label: Python Version
+      description: What version of Python are you using? (Note: Only Python 3.12+ is supported)
+      options:
+        - Python 3.12.x
+        - Python 3.13.x
+        - Other (please specify in additional context)
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of what the bug is
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: Tell us what you expected!
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Run command '...'
+        2. See error
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: error-output
+    attributes:
+      label: Error Output
+      description: Any error messages or output
+      render: shell
+
+  - type: textarea
+    id: log-files
+    attributes:
+      label: Log Files
+      description: Contents of logs/notify.log (if available). Please redact any sensitive information.
+      render: json
+      placeholder: |
+        Please paste the relevant log entries from logs/notify.log
+        Example:
+        {"event":"Starting notification application","level":"info","timestamp":"2025-09-23T11:58:20.241796Z"}
+        {"error":"Failed to show notification","level":"error","timestamp":"2025-09-23T11:58:20.242620Z"}
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other context about the problem

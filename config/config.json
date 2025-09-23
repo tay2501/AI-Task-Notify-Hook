@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Aitask Notify Hook Configuration",
+  "description": "Configuration file for notification settings",
+  "type": "object",
+  "properties": {
+    "notification": {
+      "type": "object",
+      "description": "Notification display settings",
+      "properties": {
+        "app_name": {
+          "type": "string",
+          "description": "Application name displayed in notifications",
+          "default": "Claude Code",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "timeout": {
+          "type": "integer",
+          "description": "Notification timeout in seconds",
+          "default": 10,
+          "minimum": 1,
+          "maximum": 300
+        }
+      },
+      "required": ["app_name", "timeout"],
+      "additionalProperties": false
+    },
+    "application": {
+      "type": "object",
+      "description": "Application-level settings",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Configuration version for compatibility",
+          "default": "1.0.0"
+        },
+        "debug": {
+          "type": "boolean",
+          "description": "Enable debug mode for additional logging",
+          "default": false
+        }
+      },
+      "required": ["version"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["notification", "application"],
+  "additionalProperties": false,
+
+  "notification": {
+    "app_name": "Claude Code",
+    "timeout": 10
+  },
+  "application": {
+    "version": "1.0.0",
+    "debug": false
+  }
+}

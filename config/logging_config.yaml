@@ -1,0 +1,81 @@
+version: 1
+disable_existing_loggers: false
+
+formatters:
+  json_formatter:
+    format: "%(message)s"
+
+  console_formatter:
+    format: "%(asctime)s [%(levelname)-8s] %(name)s: %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: console_formatter
+    stream: ext://sys.stdout
+
+  rotating_file:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: DEBUG
+    formatter: json_formatter
+    filename: logs/notify.log
+    when: midnight
+    interval: 1
+    backupCount: 30  # Keep logs for 30 days (1 month)
+    encoding: utf-8
+    utc: true
+
+  error_file:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: ERROR
+    formatter: json_formatter
+    filename: logs/notify_error.log
+    when: midnight
+    interval: 1
+    backupCount: 30
+    encoding: utf-8
+    utc: true
+
+loggers:
+  "":  # Root logger
+    level: DEBUG
+    handlers: [console, rotating_file, error_file]
+    propagate: false
+
+  notify:  # Application specific logger
+    level: DEBUG
+    handlers: [console, rotating_file, error_file]
+    propagate: false
+
+  plyer:  # Third-party library logger
+    level: WARNING
+    handlers: [rotating_file]
+    propagate: false
+
+# Structlog specific configuration
+structlog:
+  processors:
+    - structlog.contextvars.merge_contextvars
+    - structlog.stdlib.add_log_level
+    - structlog.stdlib.PositionalArgumentsFormatter
+    - structlog.processors.StackInfoRenderer
+    - structlog.processors.format_exc_info
+    - structlog.processors.TimeStamper:
+        fmt: "iso"
+        utc: true
+    - structlog.stdlib.ProcessorFormatter.wrap_for_formatter
+
+  logger_factory: structlog.stdlib.LoggerFactory
+  wrapper_class: structlog.stdlib.BoundLogger
+  cache_logger_on_first_use: true
+
+# Application logging settings
+app_logging:
+  log_directory: logs
+  max_retention_days: 30
+  log_level: DEBUG
+  enable_console_output: true
+  enable_file_output: true
+  log_format: json  # json or console
