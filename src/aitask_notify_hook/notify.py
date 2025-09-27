@@ -10,9 +10,14 @@ import argparse
 import sys
 from pathlib import Path
 
+# Add parent directory to sys.path for absolute imports
+src_dir = Path(__file__).parent.parent
+if str(src_dir) not in sys.path:
+    sys.path.insert(0, str(src_dir))
+
 # Configure logging before importing other modules
 try:
-    from .config.log_config import configure_logging, get_logger
+    from aitask_notify_hook.config.log_config import configure_logging, get_logger
     configure_logging()
     logger = get_logger("notify")
 except ImportError as exc:
@@ -29,7 +34,7 @@ except ImportError as exc:
 
 # Load configuration
 try:
-    from .config.config_loader import load_config, Config
+    from aitask_notify_hook.config.config_loader import load_config, Config
     app_config = load_config()
 except ImportError as exc:
     logger.error("Configuration loader not available, using hardcoded defaults",
