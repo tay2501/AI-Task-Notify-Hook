@@ -1,5 +1,5 @@
 name: Feature Request
-description: Suggest a new feature or enhancement for Aitask-Notify-Hook
+description: Suggest a new feature or enhancement for AI-Task-Notify-Hook
 title: "[Feature]: "
 labels: ["enhancement", "triage"]
 assignees: []
@@ -9,6 +9,22 @@ body:
     attributes:
       value: |
         Thanks for suggesting a new feature! Please provide as much detail as possible.
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Feature Category
+      description: What type of feature are you requesting?
+      options:
+        - Notification Enhancement
+        - Configuration Options
+        - Platform Support
+        - Performance Improvement
+        - Documentation
+        - CLI Interface
+        - Integration with Other Tools
+        - Other
+      default: 0
 
   - type: textarea
     id: problem
@@ -55,6 +71,16 @@ body:
       options:
         - label: I'd be willing to implement this feature
         - label: I'd be willing to help test this feature
+
+  - type: textarea
+    id: use-cases
+    attributes:
+      label: Use Cases
+      description: Describe specific scenarios where this feature would be useful
+      placeholder: |
+        1. When using with Claude Code hooks...
+        2. When integrating with CI/CD pipelines...
+        3. When working on large projects...
 
   - type: textarea
     id: additional-context

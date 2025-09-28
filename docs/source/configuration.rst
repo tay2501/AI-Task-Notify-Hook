@@ -2,7 +2,7 @@
 Configuration
 =============
 
-Aitask Notify Hook uses a flexible configuration system with JSON and YAML files
+Ai-task Notify Hook uses a flexible configuration system with JSON and YAML files
 to control notification behavior, logging, and application settings.
 
 Configuration Files
@@ -235,7 +235,7 @@ Load and access configuration programmatically:
 
 .. code-block:: python
 
-   from aitask_notify_hook.config.config_loader import load_config, Config
+   from ai_task_notify_hook.config.config_loader import load_config, Config
 
    # Load configuration
    config = load_config("path/to/config.json")
@@ -258,7 +258,7 @@ Validate configuration files before use:
 
 .. code-block:: python
 
-   from aitask_notify_hook.config.config_loader import validate_config_file
+   from ai_task_notify_hook.config.config_loader import validate_config_file
 
    # Validate configuration
    is_valid = validate_config_file("config/config.json")
@@ -272,7 +272,7 @@ Generate a default configuration file:
 
 .. code-block:: python
 
-   from aitask_notify_hook.config.config_loader import create_default_config
+   from ai_task_notify_hook.config.config_loader import create_default_config
 
    # Create default config file
    create_default_config("config/config.json")

@@ -1,0 +1,1 @@
+"""Configuration module for Ai-task Notify Hook."""

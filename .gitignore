@@ -1,4 +1,7 @@
-# Byte-compiled / optimized / DLL files (handled below in Python 3.12+ section)
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
 
 # C extensions
 *.so
@@ -17,6 +20,7 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
@@ -53,6 +57,7 @@ cover/
 *.pot
 
 # Django stuff:
+*.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
@@ -125,8 +130,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-.claude/
-.serena/
 
 # Spyder project settings
 .spyderproject
@@ -161,17 +164,16 @@ cython_debug/
 # VS Code
 .vscode/
 
-# UV
+# uv specific
 .uv_cache/
-uv.lock
+# Keep uv.lock for reproducible builds
+# uv.lock
 
 # Ruff
 .ruff_cache/
 
-# Python 3.12+ specific
-__pycache__/
-*.py[cod]
-*$py.class
+# Type checkers
+.pyright_cache/
 
 # Temporary files
 *.tmp
@@ -189,9 +191,14 @@ ehthumbs.db
 Thumbs.db
 desktop.ini
 
+# AI/ML Assistant tools
+.claude/
+.serena/
+.cursor/
+
 # Project specific
-# Keep structured logs for monitoring
+# Keep structured logs for monitoring but ignore log files
 !logs/
+logs/*.log
 logs/*.log.*
 logs/backup/
-logs/*.log

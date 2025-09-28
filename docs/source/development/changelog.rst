@@ -31,7 +31,7 @@ Changed
 
 Added
 -----
-- Initial release of Aitask Notify Hook
+- Initial release of Ai-task Notify Hook
 - Windows desktop notification functionality via Plyer
 - Structured logging with structlog integration
 - JSON configuration system with validation
@@ -98,8 +98,8 @@ If upgrading from development versions:
       from config_loader import load_config
 
       # New
-      from aitask_notify_hook.notify import show_notification
-      from aitask_notify_hook.config.config_loader import load_config
+      from ai_task_notify_hook.notify import show_notification
+      from ai_task_notify_hook.config.config_loader import load_config
 
 2. **Move configuration files**:
 
@@ -117,7 +117,7 @@ If upgrading from development versions:
       $ python notify.py "Title" "Message"
 
       # New
-      $ aitask-notify-hook "Title" "Message"
+      $ AI-Task-Notify-Hook "Title" "Message"
 
 Breaking Changes
 ===============

@@ -65,7 +65,7 @@ jobs:
     - name: Test wheel installation
       run: |
         uv pip install dist/*.whl
-        python -c "import notify; print('Package installed successfully')"
+        python -c "import ai_task_notify_hook.notify; print('Package installed successfully')"
 
   release:
     name: Create GitHub Release
@@ -94,32 +94,31 @@ jobs:
         fi
 
     - name: Create Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ steps.get_version.outputs.version }}
-        release_name: Release ${{ steps.get_version.outputs.version }}
+        name: Release ${{ steps.get_version.outputs.version }}
         body: |
           ## Changes in ${{ steps.get_version.outputs.version }}
 
-          See [CHANGELOG.md](CHANGELOG.md) for details.
+          See [CHANGELOG.md](docs/CHANGELOG.md) for details.
 
           ## Installation
 
           ```bash
           # Install from PyPI (coming soon)
-          pip install Aitask-Notify-Hook
+          pip install AI-Task-Notify-Hook
 
           # Install from source
-          uv add git+https://github.com/tay2501/Aitask-Notify-Hook.git
+          uv add git+https://github.com/tay2501/AI-Task-Notify-Hook.git
           ```
 
           ## Usage
 
           ```bash
-          python notify.py "Title" "Message"
+          AI-Task-Notify-Hook "Title" "Message"
           ```
+        files: dist/*
         draft: false
         prerelease: false
 
@@ -130,7 +129,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     environment:
       name: pypi
-      url: https://pypi.org/p/Aitask-Notify-Hook
+      url: https://pypi.org/p/AI-Task-Notify-Hook
     permissions:
       id-token: write
 

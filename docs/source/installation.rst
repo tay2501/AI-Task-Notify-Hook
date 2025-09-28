@@ -23,13 +23,13 @@ The fastest and most reliable installation method using `uv <https://docs.astral
 
 .. code-block:: console
 
-   $ uv add aitask-notify-hook
+   $ uv add AI-Task-Notify-Hook
 
 For global installation:
 
 .. code-block:: console
 
-   $ uv tool install aitask-notify-hook
+   $ uv tool install AI-Task-Notify-Hook
 
 Using pip
 ---------
@@ -38,7 +38,7 @@ Standard installation via pip:
 
 .. code-block:: console
 
-   $ pip install aitask-notify-hook
+   $ pip install AI-Task-Notify-Hook
 
 Development Installation
 ========================
@@ -47,10 +47,10 @@ For development work, clone the repository and install in editable mode:
 
 .. code-block:: console
 
-   $ git clone https://github.com/user/aitask-notify-hook.git
-   $ cd aitask-notify-hook
+   $ git clone https://github.com/user/AI-Task-Notify-Hook.git
+   $ cd AI-Task-Notify-Hook
    $ uv sync
-   $ uv run python -m aitask_notify_hook.notify --help
+   $ uv run python -m ai_task_notify_hook.notify --help
 
 Dependencies
 ============
@@ -78,7 +78,7 @@ Verify your installation by running:
 
 .. code-block:: console
 
-   $ aitask-notify-hook "Test" "Installation successful!"
+   $ AI-Task-Notify-Hook "Test" "Installation successful!"
 
 You should see a desktop notification if everything is working correctly.
 
@@ -93,14 +93,14 @@ Common Issues
 
    .. code-block:: console
 
-      $ uv add --force-reinstall aitask-notify-hook
+      $ uv add --force-reinstall AI-Task-Notify-Hook
 
 **Permission denied on Windows**
    Run your terminal as administrator or install to user directory:
 
    .. code-block:: console
 
-      $ pip install --user aitask-notify-hook
+      $ pip install --user AI-Task-Notify-Hook
 
 **Python version too old**
    This package requires Python 3.12+. Update your Python installation:

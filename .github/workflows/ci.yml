@@ -36,14 +36,14 @@ jobs:
 
     - name: Check packages can be imported
       run: |
-        uv run python -c "import notify; print('✓ notify module imported')"
-        uv run python -c "import log_config; print('✓ log_config module imported')"
-        uv run python -c "import config_loader; print('✓ config_loader module imported')"
+        uv run python -c "import ai_task_notify_hook.notify; print('✓ notify module imported')"
+        uv run python -c "import ai_task_notify_hook.config.log_config; print('✓ log_config module imported')"
+        uv run python -c "import ai_task_notify_hook.config.config_loader; print('✓ config_loader module imported')"
 
     - name: Test configuration system
       run: |
         uv run python -c "
-        from config_loader import load_config, validate_config_file
+        from ai_task_notify_hook.config.config_loader import load_config, validate_config_file
         print('Testing configuration system...')
         try:
             # Test configuration loading
@@ -63,7 +63,7 @@ jobs:
     - name: Test logging system
       run: |
         uv run python -c "
-        from log_config import configure_logging, get_logger
+        from ai_task_notify_hook.config.log_config import configure_logging, get_logger
         print('Testing logging system...')
         try:
             configure_logging()
@@ -106,7 +106,7 @@ jobs:
       run: uv run ruff format --check .
 
     - name: Run mypy type checking
-      run: uv run mypy notify.py log_config.py config_loader.py --ignore-missing-imports
+      run: uv run mypy src/ai_task_notify_hook --ignore-missing-imports
 
   security:
     name: Security Scan

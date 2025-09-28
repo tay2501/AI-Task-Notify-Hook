@@ -22,19 +22,20 @@ Brief description of the changes in this PR.
 ## Testing
 <!-- Describe how this change has been tested -->
 - [ ] `uv run pytest` passes (if applicable)
-- [ ] `uv run mypy` passes (type checking)
-- [ ] `uv run ruff check` passes (linting)
-- [ ] `uv run ruff format --check` passes (formatting)
+- [ ] `uv run mypy src/ai_task_notify_hook` passes (type checking)
+- [ ] `uv run ruff check .` passes (linting)
+- [ ] `uv run ruff format --check .` passes (formatting)
 - [ ] Manual testing completed
 - [ ] Cross-platform testing (Windows/macOS/Linux)
 - [ ] Configuration system tested (if applicable)
 - [ ] Logging system tested (if applicable)
+- [ ] Notification functionality tested on target platform
 
 ## Testing Environment
-- OS:
-- Python Version: (Must be 3.12+ for new features)
-- UV Version:
-- Aitask-Notify-Hook Version:
+- OS: <!-- e.g., Windows 11, macOS 14, Ubuntu 22.04 -->
+- Python Version: <!-- Must be 3.12+ for new features -->
+- UV Version: <!-- Run `uv --version` -->
+- AI-Task-Notify-Hook Version: <!-- Current version being modified -->
 
 ## Checklist
 <!-- Mark completed items with an "x" -->

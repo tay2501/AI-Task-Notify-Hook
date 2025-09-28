@@ -23,7 +23,7 @@ sys.path.insert(0, str(project_root / "src"))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "Aitask Notify Hook"
+project = "Ai-task Notify Hook"
 copyright = "2025, User"
 author = "User"
 version = "1.0.0"
@@ -77,7 +77,7 @@ add_function_parentheses = True
 add_module_names = True
 
 # A boolean that decides whether module names are prepended to all object names
-modindex_common_prefix = ["aitask_notify_hook."]
+modindex_common_prefix = ["ai_task_notify_hook."]
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
@@ -90,7 +90,6 @@ html_theme_options = {
     "analytics_id": "",
     "analytics_anonymize_ip": False,
     "logo_only": False,
-    "display_version": True,
     "prev_next_buttons_location": "bottom",
     "style_external_links": False,
     "vcs_pageview_mode": "",
@@ -130,13 +129,13 @@ todo_include_todos = True
 # This value selects if automatically documented members are sorted
 # alphabetical (value 'alphabetical'), by member type (value 'groupwise')
 # or by source order (value 'source'). The default is alphabetical.
-autodoc_member_order = "source"
+autodoc_member_order = "bysource"
 
 # This value is a list of autodoc directive flags that should be automatically
 # applied to all autodoc directives.
 autodoc_default_options = {
     "members": True,
-    "member-order": "source",
+    "member-order": "bysource",
     "special-members": "__init__",
     "undoc-members": True,
     "exclude-members": "__weakref__",
@@ -266,8 +265,8 @@ latex_elements = {
 latex_documents = [
     (
         master_doc,
-        "aitask-notify-hook.tex",
-        "Aitask Notify Hook Documentation",
+        "AI-Task-Notify-Hook.tex",
+        "Ai-task Notify Hook Documentation",
         "User",
         "manual",
     ),
@@ -281,8 +280,8 @@ latex_documents = [
 man_pages = [
     (
         master_doc,
-        "aitask-notify-hook",
-        "Aitask Notify Hook Documentation",
+        "AI-Task-Notify-Hook",
+        "Ai-task Notify Hook Documentation",
         [author],
         1,
     )
@@ -297,10 +296,10 @@ man_pages = [
 texinfo_documents = [
     (
         master_doc,
-        "AitaskNotifyHook",
-        "Aitask Notify Hook Documentation",
+        "Ai-taskNotifyHook",
+        "Ai-task Notify Hook Documentation",
         author,
-        "AitaskNotifyHook",
+        "Ai-taskNotifyHook",
         "Simple Windows notification tool for Claude Code hooks.",
         "Miscellaneous",
     ),

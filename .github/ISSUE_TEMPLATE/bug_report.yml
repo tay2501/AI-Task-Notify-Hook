@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report a bug or issue with Aitask-Notify-Hook
+description: Report a bug or issue with AI-Task-Notify-Hook
 title: "[Bug]: "
 labels: ["bug", "triage"]
 assignees: []
@@ -14,7 +14,7 @@ body:
     id: version
     attributes:
       label: Version
-      description: What version of Aitask-Notify-Hook are you running?
+      description: What version of AI-Task-Notify-Hook are you running?
       placeholder: e.g., v1.0.0
     validations:
       required: true
@@ -27,7 +27,11 @@ body:
       options:
         - Windows 10
         - Windows 11
-        - Other Windows version
+        - macOS (Intel)
+        - macOS (Apple Silicon)
+        - Linux (Ubuntu/Debian)
+        - Linux (Other)
+        - Other (please specify in additional context)
       default: 0
     validations:
       required: true
@@ -84,6 +88,18 @@ body:
       label: Error Output
       description: Any error messages or output
       render: shell
+
+  - type: textarea
+    id: installation-method
+    attributes:
+      label: Installation Method
+      description: How did you install AI-Task-Notify-Hook?
+      placeholder: |
+        e.g.,
+        - uv add ai-task-notify-hook
+        - pip install ai-task-notify-hook
+        - From source with uv
+        - Downloaded from GitHub releases
 
   - type: textarea
     id: log-files

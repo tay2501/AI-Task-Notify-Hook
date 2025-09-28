@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling", "hatch-polylith-bricks"]
+build-backend = "hatchling.build"
+
+[project]
+name = "notify-tool"
+version = "1.0.0"
+description = "Simple Windows notification tool for Claude Code hooks"
+
+authors = [
+    {name = "User"}
+]
+
+requires-python = ">=3.12"
+
+dependencies = [
+    "colorama>=0.4.6",
+    "orjson>=3.11.3",
+    "plyer>=2.1.0",
+    "pyyaml>=6.0.2",
+    "structlog>=25.4.0",
+]
+
+[project.scripts]
+notify-tool = "ai_task_notify_hook.cli:main"
+
+[tool.hatch.build.hooks.polylith-bricks]
+
+[tool.polylith.bricks]
+"../../components/ai_task_notify_hook/notification" = "ai_task_notify_hook/notification"
+"../../components/ai_task_notify_hook/config" = "ai_task_notify_hook/config"
+"../../components/ai_task_notify_hook/logging" = "ai_task_notify_hook/logging"
+"../../bases/ai_task_notify_hook/cli" = "ai_task_notify_hook/cli"

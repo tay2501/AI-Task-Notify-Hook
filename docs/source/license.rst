@@ -8,7 +8,7 @@ License
 License Information
 ==================
 
-Aitask Notify Hook is distributed under the terms of the license above.
+Ai-task Notify Hook is distributed under the terms of the license above.
 
 Third-Party Dependencies
 =======================

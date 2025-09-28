@@ -38,5 +38,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CLI help text and examples
 - Type hints for all functions
 
-[Unreleased]: https://github.com/tay2501/Aitask-Notify-Hook/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/tay2501/Aitask-Notify-Hook/releases/tag/v1.0.0
+[Unreleased]: https://github.com/tay2501/AI-Task-Notify-Hook/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/tay2501/AI-Task-Notify-Hook/releases/tag/v1.0.0

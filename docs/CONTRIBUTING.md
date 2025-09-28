@@ -1,6 +1,6 @@
-# Contributing to Aitask-Notify-Hook 🍞
+# Contributing to AI-Task-Notify-Hook 🍞
 
-Thank you for your interest in contributing to Aitask-Notify-Hook! This document provides guidelines and information for contributors.
+Thank you for your interest in contributing to AI-Task-Notify-Hook! This document provides guidelines and information for contributors.
 
 ## 🚀 Getting Started
 
@@ -15,8 +15,8 @@ Thank you for your interest in contributing to Aitask-Notify-Hook! This document
 
 1. **Fork and Clone**
    ```bash
-   git clone https://github.com/yourusername/Aitask-Notify-Hook.git
-   cd Aitask-Notify-Hook
+   git clone https://github.com/yourusername/AI-Task-Notify-Hook.git
+   cd AI-Task-Notify-Hook
    ```
 
 2. **Install Dependencies**
@@ -114,7 +114,7 @@ When reporting bugs, please include:
 1. **Environment Information**
    - OS version (Windows 10/11)
    - Python version
-   - Aitask-Notify-Hook version
+   - AI-Task-Notify-Hook version
 
 2. **Steps to Reproduce**
    - Exact commands run
@@ -166,7 +166,7 @@ Use the provided [PR template](.github/pull_request_template.md) and ensure:
 ## 🏗️ Project Structure
 
 ```
-Aitask-Notify-Hook/
+AI-Task-Notify-Hook/
 ├── .github/                # GitHub templates and workflows
 │   ├── workflows/         # CI/CD workflows
 │   ├── ISSUE_TEMPLATE/    # Issue templates
@@ -225,10 +225,10 @@ Contributors will be:
 
 ## ❓ Questions?
 
-- Check existing [Issues](https://github.com/yourusername/Aitask-Notify-Hook/issues)
-- Create a new [Discussion](https://github.com/yourusername/Aitask-Notify-Hook/discussions)
+- Check existing [Issues](https://github.com/yourusername/AI-Task-Notify-Hook/issues)
+- Create a new [Discussion](https://github.com/yourusername/AI-Task-Notify-Hook/discussions)
 - Review the [README](README.md)
 
 ---
 
-Thank you for contributing to Aitask-Notify-Hook! 🎉
+Thank you for contributing to AI-Task-Notify-Hook! 🎉

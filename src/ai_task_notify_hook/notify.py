@@ -17,7 +17,7 @@ if str(src_dir) not in sys.path:
 
 # Configure logging before importing other modules
 try:
-    from aitask_notify_hook.config.log_config import configure_logging, get_logger
+    from ai_task_notify_hook.config.log_config import configure_logging, get_logger
     configure_logging()
     logger = get_logger("notify")
 except ImportError as exc:
@@ -34,7 +34,7 @@ except ImportError as exc:
 
 # Load configuration
 try:
-    from aitask_notify_hook.config.config_loader import load_config, Config
+    from ai_task_notify_hook.config.config_loader import load_config, Config
     app_config = load_config()
 except ImportError as exc:
     logger.error("Configuration loader not available, using hardcoded defaults",

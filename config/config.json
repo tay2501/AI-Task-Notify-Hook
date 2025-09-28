@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Aitask Notify Hook Configuration",
+  "title": "Ai-task Notify Hook Configuration",
   "description": "Configuration file for notification settings",
   "type": "object",
   "properties": {

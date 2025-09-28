@@ -2,7 +2,7 @@
 Troubleshooting
 ===============
 
-This guide helps resolve common issues when using Aitask Notify Hook.
+This guide helps resolve common issues when using Ai-task Notify Hook.
 
 Common Issues
 =============
@@ -36,7 +36,7 @@ Notifications Not Appearing
 
    .. code-block:: console
 
-      $ aitask-notify-hook "Test" "Message" --timeout 30
+      $ AI-Task-Notify-Hook "Test" "Message" --timeout 30
 
 **Solutions**:
 
@@ -48,15 +48,15 @@ Notifications Not Appearing
 Import Errors
 -------------
 
-**ModuleNotFoundError: No module named 'aitask_notify_hook'**
+**ModuleNotFoundError: No module named 'ai_task_notify_hook'**
 
 .. code-block:: console
 
    # Verify installation
-   $ python -c "import aitask_notify_hook; print('OK')"
+   $ python -c "import ai_task_notify_hook; print('OK')"
 
    # Reinstall if needed
-   $ uv add --force-reinstall aitask-notify-hook
+   $ uv add --force-reinstall AI-Task-Notify-Hook
 
 **ModuleNotFoundError: No module named 'plyer'**
 
@@ -74,7 +74,7 @@ The application works with default settings, but you can create configuration fi
 
 .. code-block:: python
 
-   from aitask_notify_hook.config.config_loader import create_default_config
+   from ai_task_notify_hook.config.config_loader import create_default_config
    create_default_config("config/config.json")
 
 **Invalid JSON configuration**
@@ -134,17 +134,17 @@ Verify structlog installation:
 Command Line Issues
 ==================
 
-**Command not found: aitask-notify-hook**
+**Command not found: AI-Task-Notify-Hook**
 
 The script entry point isn't available. Try:
 
 .. code-block:: console
 
    # Direct module execution
-   $ python -m aitask_notify_hook.notify "Test" "Message"
+   $ python -m ai_task_notify_hook.notify "Test" "Message"
 
    # Check if script is in PATH
-   $ which aitask-notify-hook
+   $ which AI-Task-Notify-Hook
 
 **Permission denied errors**
 
@@ -152,7 +152,7 @@ On Windows, run as administrator or install for user:
 
 .. code-block:: console
 
-   $ pip install --user aitask-notify-hook
+   $ pip install --user AI-Task-Notify-Hook
 
 Performance Issues
 ==================
@@ -197,7 +197,7 @@ Then run with verbose output:
 
 .. code-block:: console
 
-   $ python -m aitask_notify_hook.notify "Debug Test" "Debug message" --app-name "Debug"
+   $ python -m ai_task_notify_hook.notify "Debug Test" "Debug message" --app-name "Debug"
 
 Platform-Specific Issues
 ========================
@@ -267,7 +267,7 @@ When reporting issues, include:
    .. code-block:: console
 
       $ python --version
-      $ python -c "import aitask_notify_hook; print(aitask_notify_hook.__version__)"
+      $ python -c "import ai_task_notify_hook; print(ai_task_notify_hook.__version__)"
 
 2. **System information**:
 
@@ -289,7 +289,7 @@ Use this test script to diagnose issues:
 .. code-block:: python
 
    #!/usr/bin/env python3
-   """Diagnostic script for Aitask Notify Hook."""
+   """Diagnostic script for Ai-task Notify Hook."""
 
    import sys
    import platform
@@ -298,14 +298,14 @@ Use this test script to diagnose issues:
    def test_imports():
        """Test all imports."""
        try:
-           import aitask_notify_hook
+           import ai_task_notify_hook
            print("✓ Main package import: OK")
        except ImportError as e:
            print(f"✗ Main package import failed: {e}")
            return False
 
        try:
-           from aitask_notify_hook.notify import show_notification
+           from ai_task_notify_hook.notify import show_notification
            print("✓ Notification function import: OK")
        except ImportError as e:
            print(f"✗ Notification function import failed: {e}")
@@ -323,7 +323,7 @@ Use this test script to diagnose issues:
    def test_notification():
        """Test notification functionality."""
        try:
-           from aitask_notify_hook.notify import show_notification
+           from ai_task_notify_hook.notify import show_notification
            show_notification("Test", "Diagnostic test notification")
            print("✓ Test notification sent")
            return True

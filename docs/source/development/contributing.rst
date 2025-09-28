@@ -2,7 +2,7 @@
 Contributing
 ============
 
-We welcome contributions to Aitask Notify Hook! This guide will help you get
+We welcome contributions to Ai-task Notify Hook! This guide will help you get
 started with development and contributing to the project.
 
 Development Setup
@@ -23,15 +23,15 @@ Getting Started
 
    .. code-block:: console
 
-      $ git clone https://github.com/yourusername/aitask-notify-hook.git
-      $ cd aitask-notify-hook
+      $ git clone https://github.com/yourusername/AI-Task-Notify-Hook.git
+      $ cd AI-Task-Notify-Hook
 
 2. **Set up Development Environment**
 
    .. code-block:: console
 
       $ uv sync
-      $ uv run python -c "import aitask_notify_hook; print('OK')"
+      $ uv run python -c "import ai_task_notify_hook; print('OK')"
 
 3. **Install Development Dependencies**
 
@@ -44,9 +44,9 @@ Project Structure
 
 .. code-block::
 
-   aitask-notify-hook/
+   AI-Task-Notify-Hook/
    ├── src/
-   │   └── aitask_notify_hook/         # Main package
+   │   └── ai_task_notify_hook/         # Main package
    │       ├── __init__.py
    │       ├── notify.py               # Core notification functionality
    │       └── config/                 # Configuration modules
@@ -109,7 +109,7 @@ All code must pass mypy type checking:
 
 .. code-block:: console
 
-   $ uv run mypy src/aitask_notify_hook/
+   $ uv run mypy src/ai_task_notify_hook/
 
 Error Handling
 --------------
@@ -145,7 +145,7 @@ Use pytest for testing:
 .. code-block:: python
 
    import pytest
-   from aitask_notify_hook.notify import show_notification
+   from ai_task_notify_hook.notify import show_notification
 
    def test_notification_with_defaults():
        """Test notification with default parameters."""
@@ -166,7 +166,7 @@ Running Tests
    $ uv run pytest
 
    # Run with coverage
-   $ uv run pytest --cov=aitask_notify_hook
+   $ uv run pytest --cov=ai_task_notify_hook
 
    # Run specific test file
    $ uv run pytest tests/test_notify.py
@@ -285,7 +285,7 @@ This project uses semantic versioning (SemVer):
 
 Update version in:
 * ``pyproject.toml``
-* ``src/aitask_notify_hook/__init__.py``
+* ``src/ai_task_notify_hook/__init__.py``
 * ``docs/source/conf.py``
 
 Creating Releases
@@ -340,5 +340,5 @@ When requesting features:
 Thank You
 =========
 
-Thank you for contributing to Aitask Notify Hook! Your contributions help
+Thank you for contributing to Ai-task Notify Hook! Your contributions help
 make this tool better for everyone.

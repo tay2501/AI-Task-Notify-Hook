@@ -2,7 +2,7 @@
 Usage
 =====
 
-This page covers various ways to use Aitask Notify Hook, from basic command-line
+This page covers various ways to use Ai-task Notify Hook, from basic command-line
 usage to advanced Python API integration.
 
 Command Line Interface
@@ -15,7 +15,7 @@ Display a simple notification:
 
 .. code-block:: console
 
-   $ aitask-notify-hook "Task Complete" "Your task has finished successfully"
+   $ AI-Task-Notify-Hook "Task Complete" "Your task has finished successfully"
 
 Custom App Name and Timeout
 ---------------------------
@@ -24,12 +24,12 @@ Customize the notification appearance and duration:
 
 .. code-block:: console
 
-   $ aitask-notify-hook "Build Status" "Tests passed!" --app-name "CI/CD" --timeout 10
+   $ AI-Task-Notify-Hook "Build Status" "Tests passed!" --app-name "CI/CD" --timeout 10
 
 Available Options
 -----------------
 
-.. program:: aitask-notify-hook
+.. program:: AI-Task-Notify-Hook
 
 .. option:: title
 
@@ -61,7 +61,7 @@ Import and use the notification function:
 
 .. code-block:: python
 
-   from aitask_notify_hook.notify import show_notification
+   from ai_task_notify_hook.notify import show_notification
 
    # Simple notification
    show_notification("Hello", "World!")
@@ -81,7 +81,7 @@ Work with configuration files:
 
 .. code-block:: python
 
-   from aitask_notify_hook.config.config_loader import load_config
+   from ai_task_notify_hook.config.config_loader import load_config
 
    # Load configuration
    config = load_config()
@@ -97,7 +97,7 @@ Set up structured logging:
 
 .. code-block:: python
 
-   from aitask_notify_hook.config.log_config import configure_logging, get_logger
+   from ai_task_notify_hook.config.log_config import configure_logging, get_logger
 
    # Configure logging
    configure_logging()
@@ -123,11 +123,11 @@ Add to your Claude Code hook configuration:
    {
      "hooks": {
        "on_completion": {
-         "command": "aitask-notify-hook",
+         "command": "AI-Task-Notify-Hook",
          "args": ["Task Complete", "Claude Code finished the task"]
        },
        "on_error": {
-         "command": "aitask-notify-hook",
+         "command": "AI-Task-Notify-Hook",
          "args": ["Error", "Claude Code encountered an error", "--timeout", "15"]
        }
      }
@@ -147,9 +147,9 @@ Use in shell scripts:
 
    # Check exit status and notify
    if [ $? -eq 0 ]; then
-       aitask-notify-hook "Success" "Command completed successfully"
+       AI-Task-Notify-Hook "Success" "Command completed successfully"
    else
-       aitask-notify-hook "Error" "Command failed" --timeout 30
+       AI-Task-Notify-Hook "Error" "Command failed" --timeout 30
    fi
 
 PowerShell Integration
@@ -162,10 +162,10 @@ Use in PowerShell scripts:
    # Run your command
    try {
        Your-Command
-       aitask-notify-hook "Success" "PowerShell command completed"
+       AI-Task-Notify-Hook "Success" "PowerShell command completed"
    }
    catch {
-       aitask-notify-hook "Error" "PowerShell command failed: $($_.Exception.Message)"
+       AI-Task-Notify-Hook "Error" "PowerShell command failed: $($_.Exception.Message)"
    }
 
 Error Handling
@@ -219,11 +219,11 @@ CI/CD Pipeline
    # GitHub Actions example
    - name: Notify on Success
      if: success()
-     run: aitask-notify-hook "Build Success" "All tests passed!"
+     run: AI-Task-Notify-Hook "Build Success" "All tests passed!"
 
    - name: Notify on Failure
      if: failure()
-     run: aitask-notify-hook "Build Failed" "Check the logs for details" --timeout 30
+     run: AI-Task-Notify-Hook "Build Failed" "Check the logs for details" --timeout 30
 
 Development Workflow
 --------------------

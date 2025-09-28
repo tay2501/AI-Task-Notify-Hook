@@ -1,13 +1,13 @@
 =====================================
-Aitask Notify Hook Documentation
+Ai-task Notify Hook Documentation
 =====================================
 
-.. image:: https://img.shields.io/pypi/v/aitask-notify-hook.svg
-   :target: https://pypi.org/project/aitask-notify-hook/
+.. image:: https://img.shields.io/pypi/v/AI-Task-Notify-Hook.svg
+   :target: https://pypi.org/project/AI-Task-Notify-Hook/
    :alt: PyPI Version
 
-.. image:: https://img.shields.io/pypi/pyversions/aitask-notify-hook.svg
-   :target: https://pypi.org/project/aitask-notify-hook/
+.. image:: https://img.shields.io/pypi/pyversions/AI-Task-Notify-Hook.svg
+   :target: https://pypi.org/project/AI-Task-Notify-Hook/
    :alt: Python Versions
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
@@ -41,13 +41,13 @@ Install using uv (recommended):
 
 .. code-block:: console
 
-   $ uv add aitask-notify-hook
+   $ uv add AI-Task-Notify-Hook
 
 Or using pip:
 
 .. code-block:: console
 
-   $ pip install aitask-notify-hook
+   $ pip install AI-Task-Notify-Hook
 
 Basic Usage
 -----------
@@ -56,13 +56,13 @@ Command line usage:
 
 .. code-block:: console
 
-   $ aitask-notify-hook "Task Complete" "Claude Code finished successfully"
+   $ AI-Task-Notify-Hook "Task Complete" "Claude Code finished successfully"
 
 Python API usage:
 
 .. code-block:: python
 
-   from aitask_notify_hook.notify import show_notification
+   from ai_task_notify_hook.notify import show_notification
 
    show_notification(
        title="Build Status",

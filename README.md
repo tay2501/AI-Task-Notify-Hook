@@ -1,8 +1,8 @@
 <a href='https://ko-fi.com/Z8Z31J3LMW' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 <a href="https://www.buymeacoffee.com/tay2501" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 36px !important;width: 130px !important;" ></a>
-# Aitask-Notify-Hook 🍞
+# AI-Task-Notify-Hook 🍞
 
-[![CI](https://github.com/tay2501/Aitask-Notify-Hook/workflows/CI/badge.svg)](https://github.com/tay2501/Aitask-Notify-Hook/actions)
+[![CI](https://github.com/tay2501/AI-Task-Notify-Hook/workflows/CI/badge.svg)](https://github.com/tay2501/AI-Task-Notify-Hook/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 
@@ -28,8 +28,8 @@ Professional Windows notification tool with structured logging, optimized for Cl
 uv sync
 
 # Or clone and install
-git clone https://github.com/tay2501/Aitask-Notify-Hook.git
-cd Aitask-Notify-Hook
+git clone https://github.com/tay2501/AI-Task-Notify-Hook.git
+cd AI-Task-Notify-Hook
 uv sync
 ```
 
@@ -39,10 +39,10 @@ uv sync
 
 ```bash
 # Basic notification (with structured logging)
-python notify.py "Task Complete" "Claude Code finished successfully"
+python src/ai_task_notify_hook/notify.py "Task Complete" "Claude Code finished successfully"
 
 # Custom app name and timeout
-python notify.py "Build Status" "Tests passed!" --app-name "Builder" --timeout 5
+python src/ai_task_notify_hook/notify.py "Build Status" "Tests passed!" --app-name "Builder" --timeout 5
 
 # View logs (JSON format for analysis)
 cat logs/notify.log
@@ -77,7 +77,7 @@ Add to your Claude Code hooks configuration:
 #### Python API
 
 ```python
-from notify import show_notification
+from ai_task_notify_hook.notify import show_notification
 
 show_notification(
     title="My App",
@@ -108,7 +108,7 @@ Command line arguments always override configuration file settings.
 
 ## 📚 Documentation
 
-Comprehensive documentation is available at: **[Documentation Site](https://aitask-notify-hook.readthedocs.io/)**
+Comprehensive documentation is available at: **[Documentation Site](https://AI-Task-Notify-Hook.readthedocs.io/)**
 
 ### Quick Links
 
@@ -258,19 +258,19 @@ ls -la logs/
 uv add --dev types-pyyaml mypy
 
 # Run type checking
-uv run mypy notify.py log_config.py config_loader.py
+uv run mypy src/ai_task_notify_hook/notify.py src/ai_task_notify_hook/config/log_config.py src/ai_task_notify_hook/config/config_loader.py
 ```
 
 #### 5. Configuration file issues
 ```bash
 # Create default configuration file
-uv run python config_loader.py
+uv run python src/ai_task_notify_hook/config/config_loader.py
 
 # Validate existing configuration
-uv run python -c "from config_loader import validate_config_file; print('Valid:', validate_config_file())"
+uv run python -c "from ai_task_notify_hook.config.config_loader import validate_config_file; print('Valid:', validate_config_file())"
 
 # Test configuration loading
-uv run python -c "from config_loader import load_config; config = load_config(); print(f'App: {config.notification.app_name}, Timeout: {config.notification.timeout}')"
+uv run python -c "from ai_task_notify_hook.config.config_loader import load_config; config = load_config(); print(f'App: {config.notification.app_name}, Timeout: {config.notification.timeout}')"
 ```
 
 ### Debug Mode
@@ -295,30 +295,30 @@ app_logging:
 
 ```bash
 # Clone repository
-git clone https://github.com/tay2501/Aitask-Notify-Hook.git
-cd Aitask-Notify-Hook
+git clone https://github.com/tay2501/AI-Task-Notify-Hook.git
+cd AI-Task-Notify-Hook
 
 # Install dependencies
 uv sync --dev
 
 # Run tests
-uv run python -c "import notify; print('✓ Import successful')"
+uv run python -c "import ai_task_notify_hook.notify; print('✓ Import successful')"
 ```
 
 ### Code Quality
 
 ```bash
 # Type checking (with latest stubs)
-uv run mypy notify.py log_config.py
+uv run mypy src/ai_task_notify_hook/notify.py src/ai_task_notify_hook/config/log_config.py
 
 # Format check
-uv run python -m py_compile notify.py log_config.py
+uv run python -m py_compile src/ai_task_notify_hook/notify.py src/ai_task_notify_hook/config/log_config.py
 
 # Test logging configuration
-uv run python log_config.py
+uv run python src/ai_task_notify_hook/config/log_config.py
 
 # Test notification
-uv run python notify.py "Test" "Development test" --timeout 3
+uv run python src/ai_task_notify_hook/notify.py "Test" "Development test" --timeout 3
 ```
 
 ## 🧪 Testing
