@@ -6,11 +6,10 @@ authors = [
     {name = "User"}
 ]
 dependencies = [
-    "colorama>=0.4.6",
-    "orjson>=3.11.3",
     "plyer>=2.1.0",
-    "pyyaml>=6.0.2",
+    "pydantic>=2.11.9",
     "structlog>=25.4.0",
+    "orjson>=3.10.0",
 ]
 requires-python = ">=3.12"
 
@@ -32,23 +31,31 @@ dev-mode-dirs = ["components", "bases", "development", "."]
 
 [tool.uv]
 dev-dependencies = [
+    # Polylith CLI
+    "polylith-cli>=1.35.0",
+    # Type checking
     "mypy>=1.18.2",
-    "types-pyyaml>=6.0.12.20250915",
-    "types-requests>=2.32.4.20250913",
-    # Documentation dependencies
+    # Testing
+    "pytest>=8.0.0",
+    "pytest-cov>=5.0.0",
+    "pytest-mock>=3.12.0",
+    "pytest-benchmark>=4.0.0",
+    # Documentation
     "sphinx>=7.3.0",
     "sphinx-rtd-theme>=3.0.0",
     "myst-parser>=4.0.0",
-    # Testing dependencies (future)
-    "pytest>=8.0.0",
-    "pytest-cov>=5.0.0",
-    "polylith-cli>=1.35.0",
+    # Code quality (Ruff replaces Black, isort, Flake8, etc.)
+    "ruff>=0.8.0",
 ]
 
 [tool.mypy]
 python_version = "3.12"
+strict = true
 warn_return_any = true
 warn_unused_configs = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
 check_untyped_defs = true
@@ -59,6 +66,145 @@ warn_no_return = true
 warn_unreachable = true
 strict_equality = true
 show_error_codes = true
+no_implicit_reexport = true
+strict_concatenate = true
+
+[[tool.mypy.overrides]]
+module = ["plyer.*"]
+ignore_missing_imports = true
+follow_imports = "skip"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 99
+indent-width = 4
+
+# Enable preview features for latest improvements
+preview = false
+
+# Exclude common directories
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    "build",
+    "dist",
+    ".benchmarks",
+    "docs/build",
+]
+
+[tool.ruff.lint]
+# Select comprehensive rule sets following Ruff best practices
+select = [
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings
+    "F",     # Pyflakes
+    "I",     # isort
+    "B",     # flake8-bugbear
+    "C4",    # flake8-comprehensions
+    "UP",    # pyupgrade
+    "SIM",   # flake8-simplify
+    "RUF",   # Ruff-specific rules
+    "N",     # pep8-naming
+    "ANN",   # flake8-annotations
+    "ASYNC", # flake8-async
+    "S",     # flake8-bandit (security)
+    "BLE",   # flake8-blind-except
+    "A",     # flake8-builtins
+    "COM",   # flake8-commas
+    "DTZ",   # flake8-datetimez
+    "T10",   # flake8-debugger
+    "EM",    # flake8-errmsg
+    "ISC",   # flake8-implicit-str-concat
+    "ICN",   # flake8-import-conventions
+    "PIE",   # flake8-pie
+    "PT",    # flake8-pytest-style
+    "Q",     # flake8-quotes
+    "RSE",   # flake8-raise
+    "RET",   # flake8-return
+    "SLOT",  # flake8-slots
+    "SLF",   # flake8-self
+    "TID",   # flake8-tidy-imports
+    "TCH",   # flake8-type-checking
+    "ARG",   # flake8-unused-arguments
+    "PTH",   # flake8-use-pathlib
+    "ERA",   # eradicate (commented-out code)
+    "PL",    # Pylint
+    "PERF",  # Perflint
+    "FURB",  # refurb
+    "LOG",   # flake8-logging
+    "TRY",   # tryceratops
+]
+
+ignore = [
+    "E501",    # line too long, handled by formatter
+    "COM812",  # trailing comma missing (conflicts with formatter)
+    "ISC001",  # implicit string concatenation (conflicts with formatter)
+    "D",       # pydocstring (not needed for this project)
+    "TRY003",  # Allow long exception messages (more readable)
+    "EM101",   # Allow string literals in exceptions (simpler code)
+    "EM102",   # Allow f-strings in exceptions (more readable)
+    "TRY300",  # Allow return in try block (clearer control flow)
+    "PLR2004", # Allow magic values (constants would add unnecessary complexity)
+    "ARG002",  # Allow unused method arguments (future compatibility)
+    "TRY004",  # Allow ValueError instead of TypeError (consistency)
+    "TRY400",  # Allow logger.error instead of logger.exception (explicit control)
+]
+
+# Allow automatic fixes for all fixable rules
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.per-file-ignores]
+"test/**/*.py" = [
+    "S101",    # allow asserts in tests
+    "ANN",     # no type annotations required in tests
+    "PLR2004", # allow magic values in tests
+    "ARG",     # allow unused arguments in test fixtures
+    "F841",    # allow unused variables in tests (benchmark results)
+    "PLC0415", # allow imports in test functions
+    "BLE001",  # allow blind exceptions in tests
+    "RUF059",  # allow unpacked unused variables in tests
+]
+"docs/source/conf.py" = [
+    "A001",    # allow shadowing builtins in Sphinx config
+    "ANN",     # no type annotations in Sphinx config
+]
+"src/**/*.py" = [
+    "ALL",     # ignore old src directory (deprecated)
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+split-on-trailing-comma = false
+known-first-party = ["ai_task_notify_hook"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"
+inline-quotes = "double"
+
+[tool.ruff.lint.pylint]
+max-args = 10
+max-branches = 15
+max-returns = 8
+max-statements = 60
+
+[tool.ruff.format]
+# Use double quotes for consistency
+quote-style = "double"
+
+# Indent with spaces
+indent-style = "space"
+
+# Line ending style (auto-detect)
+line-ending = "auto"
+
+# Format docstring code examples
+docstring-code-format = true
+
+# Respect magic trailing comma
+skip-magic-trailing-comma = false
 
 [tool.pylance]
 ignore = ["**/site-packages/**"]
@@ -84,8 +230,6 @@ docs = [
 ]
 dev = [
     "mypy>=1.18.2",
-    "types-pyyaml>=6.0.12.20250915",
-    "types-requests>=2.32.4.20250913",
     "pytest>=8.0.0",
     "pytest-cov>=5.0.0",
 ]

@@ -14,9 +14,11 @@ from typing import Any
 
 try:
     from .log_config import get_logger
+
     logger = get_logger("config_loader")
 except ImportError:
     import logging
+
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger("config_loader")
 
@@ -24,6 +26,7 @@ except ImportError:
 @dataclass(frozen=True)
 class NotificationConfig:
     """Notification display settings."""
+
     app_name: str = "Claude Code"
     timeout: int = 10
 
@@ -39,6 +42,7 @@ class NotificationConfig:
 @dataclass(frozen=True)
 class ApplicationConfig:
     """Application-level settings."""
+
     version: str = "1.0.0"
     debug: bool = False
 
@@ -54,6 +58,7 @@ class ApplicationConfig:
 @dataclass(frozen=True)
 class Config:
     """Main configuration container."""
+
     notification: NotificationConfig = field(default_factory=NotificationConfig)
     application: ApplicationConfig = field(default_factory=ApplicationConfig)
 
@@ -77,12 +82,12 @@ class Config:
 
             notification = NotificationConfig(
                 app_name=notification_data.get("app_name", "Claude Code"),
-                timeout=notification_data.get("timeout", 10)
+                timeout=notification_data.get("timeout", 10),
             )
 
             application = ApplicationConfig(
                 version=application_data.get("version", "1.0.0"),
-                debug=application_data.get("debug", False)
+                debug=application_data.get("debug", False),
             )
 
             return cls(notification=notification, application=application)
@@ -109,33 +114,44 @@ def load_config(config_path: str | Path = "config/config.json") -> Config:
                 data = json.load(file)
 
             config = Config.from_dict(data)
-            logger.info("Configuration loaded successfully",
-                       config_file=str(config_path),
-                       app_name=config.notification.app_name,
-                       timeout=config.notification.timeout)
+            logger.info(
+                "Configuration loaded successfully",
+                config_file=str(config_path),
+                app_name=config.notification.app_name,
+                timeout=config.notification.timeout,
+            )
             return config
 
         except json.JSONDecodeError as exc:
-            logger.error("Invalid JSON in configuration file",
-                        config_file=str(config_path),
-                        error=str(exc))
+            logger.error(
+                "Invalid JSON in configuration file",
+                config_file=str(config_path),
+                error=str(exc),
+            )
         except ValueError as exc:
-            logger.error("Invalid configuration values",
-                        config_file=str(config_path),
-                        error=str(exc))
+            logger.error(
+                "Invalid configuration values",
+                config_file=str(config_path),
+                error=str(exc),
+            )
         except Exception as exc:
-            logger.error("Failed to load configuration file",
-                        config_file=str(config_path),
-                        error=str(exc))
+            logger.error(
+                "Failed to load configuration file",
+                config_file=str(config_path),
+                error=str(exc),
+            )
     else:
-        logger.info("Configuration file not found, using defaults",
-                   config_file=str(config_path))
+        logger.info(
+            "Configuration file not found, using defaults", config_file=str(config_path)
+        )
 
     # Fallback to defaults
     config = Config()
-    logger.info("Using default configuration",
-               app_name=config.notification.app_name,
-               timeout=config.notification.timeout)
+    logger.info(
+        "Using default configuration",
+        app_name=config.notification.app_name,
+        timeout=config.notification.timeout,
+    )
     return config
 
 
@@ -151,7 +167,9 @@ def validate_config_file(config_path: str | Path = "config/config.json") -> bool
     config_path = Path(config_path)
 
     if not config_path.exists():
-        logger.warning("Configuration file does not exist", config_file=str(config_path))
+        logger.warning(
+            "Configuration file does not exist", config_file=str(config_path)
+        )
         return False
 
     try:
@@ -164,13 +182,21 @@ def validate_config_file(config_path: str | Path = "config/config.json") -> bool
         return True
 
     except json.JSONDecodeError as exc:
-        logger.error("Invalid JSON syntax", config_file=str(config_path), error=str(exc))
+        logger.error(
+            "Invalid JSON syntax", config_file=str(config_path), error=str(exc)
+        )
         return False
     except ValueError as exc:
-        logger.error("Invalid configuration values", config_file=str(config_path), error=str(exc))
+        logger.error(
+            "Invalid configuration values", config_file=str(config_path), error=str(exc)
+        )
         return False
     except Exception as exc:
-        logger.error("Configuration validation failed", config_file=str(config_path), error=str(exc))
+        logger.error(
+            "Configuration validation failed",
+            config_file=str(config_path),
+            error=str(exc),
+        )
         return False
 
 
@@ -183,14 +209,8 @@ def create_default_config(config_path: str | Path = "config/config.json") -> Non
     config_path = Path(config_path)
 
     default_config = {
-        "notification": {
-            "app_name": "Claude Code",
-            "timeout": 10
-        },
-        "application": {
-            "version": "1.0.0",
-            "debug": False
-        }
+        "notification": {"app_name": "Claude Code", "timeout": 10},
+        "application": {"version": "1.0.0", "debug": False},
     }
 
     try:
@@ -200,8 +220,11 @@ def create_default_config(config_path: str | Path = "config/config.json") -> Non
         logger.info("Default configuration file created", config_file=str(config_path))
 
     except Exception as exc:
-        logger.error("Failed to create configuration file",
-                    config_file=str(config_path), error=str(exc))
+        logger.error(
+            "Failed to create configuration file",
+            config_file=str(config_path),
+            error=str(exc),
+        )
         raise
 
 

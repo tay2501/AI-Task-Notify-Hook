@@ -1,81 +1,75 @@
 """Logging component.
 
 This component provides structured logging capabilities using structlog.
-Designed for high reusability and loose coupling.
+Simple, programmatic configuration following best practices.
 """
 
 from __future__ import annotations
 
 import logging
-import logging.config
 import sys
-from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING
 
-try:
-    import orjson  # type: ignore[import-untyped]
-    import structlog
-    import yaml
-except ImportError as exc:
-    print(f"Error: Required logging library not found: {exc}", file=sys.stderr)
-    sys.exit(1)
+import structlog
+
+if TYPE_CHECKING:
+    from structlog.stdlib import BoundLogger
+
+from ai_task_notify_hook.models import LogLevel
 
 
-def configure_logging(config_path: str | Path = "config/logging_config.yaml") -> None:
-    """Configure logging system from external configuration file.
+def configure_logging(log_level: LogLevel = LogLevel.INFO) -> None:
+    """Configure logging system with structured logging.
+
+    Uses structlog with console rendering for terminal and JSON for production.
+    Follows structlog best practices with minimal configuration.
 
     Args:
-        config_path: Path to YAML configuration file
-    """
-    # Set up minimal stderr fallback first
-    fallback_handler = logging.StreamHandler(sys.stderr)
-    fallback_formatter = logging.Formatter(
-        "%(asctime)s [%(levelname)-8s] %(name)s: %(message)s"
-    )
-    fallback_handler.setFormatter(fallback_formatter)
+        log_level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
 
-    # Configure basic structlog for fallback
+    Examples:
+        >>> configure_logging()  # Use INFO level
+        >>> configure_logging(log_level=LogLevel.DEBUG)
+    """
+    # Configure standard library logging first
+    logging.basicConfig(
+        format="%(message)s",
+        stream=sys.stderr,
+        level=getattr(logging, log_level.value.upper()),
+    )
+
+    # Shared processors for all environments
+    shared_processors = [
+        structlog.contextvars.merge_contextvars,
+        structlog.stdlib.add_log_level,
+        structlog.processors.TimeStamper(fmt="iso", utc=True),
+    ]
+
+    # Choose renderer based on environment
+    if sys.stderr.isatty():
+        # Pretty printing for terminal (respects FORCE_COLOR/NO_COLOR)
+        processors = [
+            *shared_processors,
+            structlog.dev.ConsoleRenderer(),
+        ]
+    else:
+        # JSON for production/containers
+        processors = [
+            *shared_processors,
+            structlog.processors.dict_tracebacks,
+            structlog.processors.JSONRenderer(),
+        ]
+
+    # Configure structlog
     structlog.configure(
-        processors=[
-            structlog.contextvars.merge_contextvars,
-            structlog.stdlib.add_log_level,
-            structlog.processors.TimeStamper(fmt="iso", utc=True),
-            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
-        ],
+        processors=processors,
         logger_factory=structlog.stdlib.LoggerFactory(),
         wrapper_class=structlog.stdlib.BoundLogger,
         cache_logger_on_first_use=True,
     )
 
-    config_path = Path(config_path)
 
-    try:
-        # Load configuration if available
-        if config_path.exists():
-            with config_path.open(encoding="utf-8") as file:
-                config = yaml.safe_load(file) or {}
-
-            # Ensure log directory exists
-            app_config = config.get("app_logging", {})
-            log_dir = app_config.get("log_directory", "logs")
-            Path(log_dir).mkdir(parents=True, exist_ok=True)
-
-            # Configure standard library logging
-            logging_config = {
-                key: value for key, value in config.items()
-                if key not in ("structlog", "app_logging")
-            }
-            logging.config.dictConfig(logging_config)
-
-    except Exception as exc:
-        # Use fallback configuration
-        root_logger = logging.getLogger()
-        root_logger.handlers.clear()
-        root_logger.addHandler(fallback_handler)
-        root_logger.setLevel(logging.INFO)
-
-
-def get_logger(name: str | None = None) -> structlog.stdlib.BoundLogger:
+def get_logger(name: str | None = None) -> BoundLogger:
     """Get a configured structlog logger.
 
     Args:
@@ -83,5 +77,9 @@ def get_logger(name: str | None = None) -> structlog.stdlib.BoundLogger:
 
     Returns:
         Configured structlog logger
+
+    Examples:
+        >>> logger = get_logger(__name__)
+        >>> logger.info("Application started")
     """
     return structlog.get_logger(name)

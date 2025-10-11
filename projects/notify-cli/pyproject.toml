@@ -3,9 +3,9 @@ requires = ["hatchling", "hatch-polylith-bricks"]
 build-backend = "hatchling.build"
 
 [project]
-name = "notify-tool"
+name = "notify-cli"
 version = "1.0.0"
-description = "Simple Windows notification tool for Claude Code hooks"
+description = "Command-line interface for AI Task Notify Hook"
 
 authors = [
     {name = "User"}
@@ -17,17 +17,26 @@ dependencies = [
     "plyer>=2.1.0",
     "pydantic>=2.11.9",
     "structlog>=25.4.0",
+    "click>=8.1.0",
+    "rich>=13.7.0",
 ]
 
 [project.scripts]
-notify-tool = "ai_task_notify_hook.cli:main"
+notify = "ai_task_notify_hook.cli_enhanced:main"
 
 [tool.hatch.build.hooks.polylith-bricks]
 
 [tool.polylith.bricks]
 "../../components/ai_task_notify_hook/models" = "ai_task_notify_hook/models"
+"../../components/ai_task_notify_hook/core" = "ai_task_notify_hook/core"
 "../../components/ai_task_notify_hook/validation" = "ai_task_notify_hook/validation"
 "../../components/ai_task_notify_hook/notification" = "ai_task_notify_hook/notification"
 "../../components/ai_task_notify_hook/config" = "ai_task_notify_hook/config"
 "../../components/ai_task_notify_hook/logging" = "ai_task_notify_hook/logging"
-"../../bases/ai_task_notify_hook/cli" = "ai_task_notify_hook/cli"
+"../../bases/ai_task_notify_hook/cli_enhanced" = "ai_task_notify_hook/cli_enhanced"
+
+[project.urls]
+"Homepage" = "https://github.com/tay2501/AI-Task-Notify-Hook"
+"Documentation" = "https://github.com/tay2501/AI-Task-Notify-Hook"
+"Repository" = "https://github.com/tay2501/AI-Task-Notify-Hook.git"
+"Bug Tracker" = "https://github.com/tay2501/AI-Task-Notify-Hook/issues"

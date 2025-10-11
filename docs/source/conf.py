@@ -9,7 +9,6 @@ https://www.sphinx-doc.org/en/master/usage/configuration.html
 
 from __future__ import annotations
 
-import os
 import sys
 from pathlib import Path
 
@@ -18,7 +17,9 @@ from pathlib import Path
 # add these directories to sys.path here.
 
 project_root = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(project_root / "src"))
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "bases"))
+sys.path.insert(0, str(project_root / "components"))
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -306,6 +307,7 @@ texinfo_documents = [
 ]
 
 # -- Extension configuration -------------------------------------------------
+
 
 def setup(app):
     """Sphinx application setup hook."""

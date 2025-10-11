@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import logging
 import logging.config
-import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -22,7 +21,9 @@ except ImportError as exc:
     sys.exit(1)
 
 
-def load_logging_config(config_path: str | Path = "config/logging_config.yaml") -> dict[str, Any]:
+def load_logging_config(
+    config_path: str | Path = "config/logging_config.yaml",
+) -> dict[str, Any]:
     """Load logging configuration from YAML file.
 
     Args:
@@ -85,9 +86,11 @@ def setup_structlog(config: dict[str, Any]) -> None:
     # Configure structlog
     structlog.configure(
         processors=processors,
-        logger_factory=getattr(structlog.stdlib, "LoggerFactory")(),
-        wrapper_class=getattr(structlog.stdlib, "BoundLogger"),
-        cache_logger_on_first_use=structlog_config.get("cache_logger_on_first_use", True),
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        wrapper_class=structlog.stdlib.BoundLogger,
+        cache_logger_on_first_use=structlog_config.get(
+            "cache_logger_on_first_use", True
+        ),
     )
 
 
@@ -137,7 +140,7 @@ def configure_logging(config_path: str | Path = "config/logging_config.yaml") ->
         "%(asctime)s [%(levelname)-8s] %(name)s: %(message)s"
     )
     fallback_handler.setFormatter(fallback_formatter)
-    
+
     # Configure basic structlog for fallback
     structlog.configure(
         processors=[
@@ -150,7 +153,7 @@ def configure_logging(config_path: str | Path = "config/logging_config.yaml") ->
         wrapper_class=structlog.stdlib.BoundLogger,
         cache_logger_on_first_use=True,
     )
-    
+
     # Set up stderr formatter for fallback
     stderr_formatter = structlog.stdlib.ProcessorFormatter(
         processors=[
@@ -159,7 +162,7 @@ def configure_logging(config_path: str | Path = "config/logging_config.yaml") ->
         ],
     )
     fallback_handler.setFormatter(stderr_formatter)
-    
+
     try:
         # Load configuration
         config = load_logging_config(config_path)
@@ -171,7 +174,8 @@ def configure_logging(config_path: str | Path = "config/logging_config.yaml") ->
 
         # Configure standard library logging
         logging_config = {
-            key: value for key, value in config.items()
+            key: value
+            for key, value in config.items()
             if key not in ("structlog", "app_logging")
         }
         logging.config.dictConfig(logging_config)
@@ -185,7 +189,8 @@ def configure_logging(config_path: str | Path = "config/logging_config.yaml") ->
         ]
 
         structlog.configure(
-            processors=shared_processors + [
+            processors=shared_processors
+            + [
                 structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
             ],
             logger_factory=structlog.stdlib.LoggerFactory(),
@@ -195,18 +200,20 @@ def configure_logging(config_path: str | Path = "config/logging_config.yaml") ->
 
         # Update formatters to use ProcessorFormatter
         for handler in logging.getLogger().handlers:
-            if hasattr(handler, 'formatter'):
-                handler_name = getattr(handler, 'name', '')
-                if 'file' in handler_name.lower() or hasattr(handler, 'baseFilename'):
+            if hasattr(handler, "formatter"):
+                handler_name = getattr(handler, "name", "")
+                if "file" in handler_name.lower() or hasattr(handler, "baseFilename"):
                     # File handlers get JSON formatter
                     def json_serializer(obj: dict, **kwargs: Any) -> str:
-                        return orjson.dumps(obj).decode('utf-8')
+                        return orjson.dumps(obj).decode("utf-8")
 
                     formatter = structlog.stdlib.ProcessorFormatter(
                         foreign_pre_chain=shared_processors,
                         processors=[
                             structlog.stdlib.ProcessorFormatter.remove_processors_meta,
-                            structlog.processors.JSONRenderer(serializer=json_serializer),
+                            structlog.processors.JSONRenderer(
+                                serializer=json_serializer
+                            ),
                         ],
                     )
                 else:
@@ -229,9 +236,12 @@ def configure_logging(config_path: str | Path = "config/logging_config.yaml") ->
 
         # Log the configuration error using structlog
         fallback_logger = structlog.get_logger("log_config.fallback")
-        fallback_logger.error("Failed to load external logging configuration, using stderr fallback",
-                            error=str(exc), config_path=str(config_path),
-                            fallback_active=True)
+        fallback_logger.error(
+            "Failed to load external logging configuration, using stderr fallback",
+            error=str(exc),
+            config_path=str(config_path),
+            fallback_active=True,
+        )
 
 
 def get_logger(name: str | None = None) -> structlog.stdlib.BoundLogger:

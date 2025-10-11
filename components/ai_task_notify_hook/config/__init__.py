@@ -1,11 +1,17 @@
-"""Configuration component public interface."""
+"""Configuration management component.
 
-from .core import Config, NotificationConfig, ApplicationConfig, load_config, validate_config_file
+This component handles configuration loading, validation, and management.
+Follows single responsibility principle with high cohesion.
+"""
+
+from ai_task_notify_hook.config.loader import load_config, validate_config_file
+from ai_task_notify_hook.config.models import ApplicationConfig, NotificationConfig
+from ai_task_notify_hook.validation.exceptions import ConfigurationError
 
 __all__ = [
-    "Config",
-    "NotificationConfig",
     "ApplicationConfig",
+    "ConfigurationError",
+    "NotificationConfig",
     "load_config",
-    "validate_config_file"
+    "validate_config_file",
 ]

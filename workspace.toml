@@ -10,7 +10,26 @@ stable = "stable-*"
 release = "v[0-9]*"
 
 [tool.polylith.resources]
-brick_docs_enabled = false
+brick_docs_enabled = true
 
 [tool.polylith.test]
 enabled = true
+test_runner = "pytest"
+coverage = true
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--cov=ai_task_notify_hook",
+    "--cov-report=html",
+    "--cov-report=term-missing",
+    "--cov-fail-under=80",
+    "--benchmark-skip"  # Skip benchmarks by default
+]
+markers = [
+    "performance: marks tests as performance tests (deselect with '-m \"not performance\"')",
+    "benchmark: marks tests as benchmark tests",
+]
