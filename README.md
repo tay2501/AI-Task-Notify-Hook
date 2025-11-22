@@ -4,7 +4,7 @@
 
 [![CI](https://github.com/tay2501/AI-Task-Notify-Hook/workflows/CI/badge.svg)](https://github.com/tay2501/AI-Task-Notify-Hook/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
 
 Professional Windows notification tool with structured logging, optimized for Claude Code hooks and automation workflows.
 
@@ -12,7 +12,7 @@ Professional Windows notification tool with structured logging, optimized for Cl
 
 - 🚀 **Fast & Lightweight**: Minimal dependencies, maximum performance
 - 🎯 **Claude Code Integration**: Perfect for automation hooks
-- 🛡️ **Type Safe**: Full type hints and mypy support (Python 3.12+)
+- 🛡️ **Type Safe**: Full type hints and mypy support (Python 3.13+)
 - 📊 **Structured Logging**: Advanced logging with structlog and 30-day rotation
 - ⚙️ **External Configuration**: YAML-based logging configuration
 - 🔧 **Highly Configurable**: Customizable timeout, app name, and logging
@@ -286,7 +286,7 @@ app_logging:
 
 ### Prerequisites
 
-- Python 3.12+
+- Python 3.13+
 - uv package manager
 - Windows 10/11 (for notifications)
 - YAML support for configuration
@@ -308,14 +308,23 @@ uv run python -c "import ai_task_notify_hook.notify; print('✓ Import successfu
 ### Code Quality
 
 ```bash
-# Type checking (with latest stubs)
-uv run mypy src/ai_task_notify_hook/notify.py src/ai_task_notify_hook/config/log_config.py
+# Linting with Ruff (fast Python linter)
+uv run ruff check .
 
-# Format check
-uv run python -m py_compile src/ai_task_notify_hook/notify.py src/ai_task_notify_hook/config/log_config.py
+# Auto-fix issues with Ruff
+uv run ruff check --fix .
 
-# Test logging configuration
-uv run python src/ai_task_notify_hook/config/log_config.py
+# Format code with Ruff (replaces Black)
+uv run ruff format .
+
+# Check formatting without applying changes
+uv run ruff format --check .
+
+# Type checking with mypy
+uv run mypy src/ai_task_notify_hook
+
+# Run all checks
+uv run ruff check --fix . && uv run ruff format . && uv run mypy src/ai_task_notify_hook
 
 # Test notification
 uv run python src/ai_task_notify_hook/notify.py "Test" "Development test" --timeout 3
@@ -325,7 +334,7 @@ uv run python src/ai_task_notify_hook/notify.py "Test" "Development test" --time
 
 The project includes comprehensive testing and validation:
 
-- ✅ Python 3.12+ compatibility testing
+- ✅ Python 3.13+ compatibility testing
 - ✅ Type safety validation with MyPy
 - ✅ Structured logging verification
 - ✅ Configuration file validation
@@ -353,7 +362,7 @@ For security vulnerabilities, please see our [Security Policy](.github/SECURITY.
 ## 📋 Requirements
 
 ### Runtime Dependencies
-- Python 3.12+
+- Python 3.13+
 - Windows 10/11 (for notifications)
 - plyer >= 2.1.0
 - structlog >= 25.4.0
@@ -362,9 +371,13 @@ For security vulnerabilities, please see our [Security Policy](.github/SECURITY.
 - colorama >= 0.4.6
 
 ### Development Dependencies
+- ruff >= 0.13.2 (replaces flake8, black, isort, pylint)
 - mypy >= 1.18.2
-- types-pyyaml >= 6.0.12
-- types-requests >= 2.32.4
+- pytest >= 8.0.0
+- pytest-cov >= 5.0.0
+- pytest-mock >= 3.12.0
+- pytest-benchmark >= 4.0.0
+- sphinx >= 7.3.0
 
 ## 🏗️ Design Principles
 
@@ -374,7 +387,7 @@ For security vulnerabilities, please see our [Security Policy](.github/SECURITY.
 - **🚀 Performance First**: Fast startup, minimal memory usage, efficient logging
 - **📊 Observability**: Structured logging for monitoring and debugging
 - **⚙️ Configuration-Driven**: External YAML configuration for flexibility
-- **🛡️ Type Safety**: Full type hints for Python 3.12+ compatibility
+- **🛡️ Type Safety**: Full type hints for Python 3.13+ compatibility
 
 ---
 

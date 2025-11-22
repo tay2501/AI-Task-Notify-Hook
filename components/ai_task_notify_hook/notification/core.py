@@ -34,8 +34,8 @@ class StandardNotificationProvider:
         """
         if notification is None:
             raise NotificationBackendError(
-                "plyer library not properly imported", cause=import_error
-            )
+                "plyer library not properly imported"
+            ) from import_error
 
         try:
             # Map notification level to app icon if needed
@@ -51,12 +51,10 @@ class StandardNotificationProvider:
 
         except AttributeError as exc:
             raise NotificationBackendError(
-                "plyer notification method not available on this platform", cause=exc
+                "plyer notification method not available on this platform"
             ) from exc
         except Exception as exc:
-            raise NotificationError(
-                f"Failed to show notification: {exc}", cause=exc
-            ) from exc
+            raise NotificationError(f"Failed to show notification: {exc}") from exc
 
     def _get_icon_for_level(self, level: NotificationLevel) -> str | None:
         """Get system icon path based on notification level.

@@ -6,13 +6,13 @@ Ai-task Notify Hook Documentation
    :target: https://pypi.org/project/AI-Task-Notify-Hook/
    :alt: PyPI Version
 
-.. image:: https://img.shields.io/pypi/pyversions/AI-Task-Notify-Hook.svg
-   :target: https://pypi.org/project/AI-Task-Notify-Hook/
-   :alt: Python Versions
+.. image:: https://img.shields.io/badge/python-3.12+-blue.svg
+   :target: https://www.python.org/downloads/
+   :alt: Python 3.12+
 
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-   :target: https://github.com/psf/black
-   :alt: Code Style: Black
+.. image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json
+   :target: https://github.com/astral-sh/ruff
+   :alt: Ruff
 
 A simple and robust Windows notification tool designed specifically for Claude Code hooks,
 providing structured logging and reliable desktop notifications.

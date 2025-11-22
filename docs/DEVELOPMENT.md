@@ -87,12 +87,12 @@ uv run poly info
 
 ### Development Tools
 The project uses the following tools:
-- **uv**: Fast Python package manager
+- **uv**: Fast Python package manager (replaces pip, pip-tools, poetry)
 - **polylith-cli**: Polylith workspace management
-- **ruff**: Fast Python linter and formatter
+- **ruff**: Fast Python linter and formatter (replaces flake8, black, isort, pylint)
 - **mypy**: Static type checker
-- **pytest**: Testing framework
-- **sphinx**: Documentation generator
+- **pytest**: Testing framework with coverage
+- **sphinx**: Documentation generator with MyST parser
 
 ---
 
@@ -281,17 +281,24 @@ if not config_path.is_file():
 ```
 
 ### Code Formatting
-- **Tool**: Ruff (replaces Black, isort, Flake8)
+- **Tool**: Ruff 0.13.2+ (replaces Black, isort, Flake8, Pylint)
 - **Line Length**: 99 characters
 - **Quotes**: Double quotes (`"`) for strings and docstrings
 - **Indentation**: 4 spaces
+- **Preview Mode**: Enabled for latest features
 
 ```bash
+# Lint and auto-fix issues
+uv run ruff check --fix .
+
 # Format code
 uv run ruff format .
 
-# Check and fix linting issues
-uv run ruff check --fix .
+# Check formatting without applying changes
+uv run ruff format --check .
+
+# Run all Ruff checks together
+uv run ruff check --fix . && uv run ruff format .
 ```
 
 ### Import Organization
@@ -495,20 +502,20 @@ uv sync
 
 ### Code Quality Checks
 ```bash
+# Lint and auto-fix issues
+uv run ruff check --fix .
+
 # Format code
 uv run ruff format .
 
-# Lint code
-uv run ruff check .
-
-# Auto-fix linting issues
-uv run ruff check --fix .
-
 # Type check
-uv run mypy components bases
+uv run mypy src/ai_task_notify_hook
 
-# Run all checks
-make check  # If Makefile is configured
+# Run all checks together
+uv run ruff check --fix . && uv run ruff format . && uv run mypy src/ai_task_notify_hook
+
+# View Ruff statistics
+uv run ruff check . --statistics
 ```
 
 ### Building Documentation

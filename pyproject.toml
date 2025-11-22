@@ -11,7 +11,7 @@ dependencies = [
     "structlog>=25.4.0",
     "orjson>=3.10.0",
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 
 [project.scripts]
 AI-Task-Notify-Hook = "ai_task_notify_hook.notify:main"
@@ -44,12 +44,12 @@ dev-dependencies = [
     "sphinx>=7.3.0",
     "sphinx-rtd-theme>=3.0.0",
     "myst-parser>=4.0.0",
-    # Code quality (Ruff replaces Black, isort, Flake8, etc.)
-    "ruff>=0.8.0",
+    # Code quality (Ruff replaces Black, isort, Flake8, Pylint, etc.)
+    "ruff>=0.13.2",
 ]
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.13"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -68,6 +68,10 @@ strict_equality = true
 show_error_codes = true
 no_implicit_reexport = true
 strict_concatenate = true
+# Polylith workspace configuration
+namespace_packages = true
+explicit_package_bases = true
+mypy_path = "components:bases"
 
 [[tool.mypy.overrides]]
 module = ["plyer.*"]
@@ -75,12 +79,12 @@ ignore_missing_imports = true
 follow_imports = "skip"
 
 [tool.ruff]
-target-version = "py312"
+target-version = "py313"
 line-length = 99
 indent-width = 4
 
 # Enable preview features for latest improvements
-preview = false
+preview = true
 
 # Exclude common directories
 exclude = [
@@ -202,6 +206,9 @@ line-ending = "auto"
 
 # Format docstring code examples
 docstring-code-format = true
+
+# Set line length for docstring code formatting
+docstring-code-line-length = "dynamic"
 
 # Respect magic trailing comma
 skip-magic-trailing-comma = false

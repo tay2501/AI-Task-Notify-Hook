@@ -43,17 +43,17 @@ Thank you for your interest in contributing to AI-Task-Notify-Hook! This documen
 Before submitting, ensure your code passes all checks:
 
 ```bash
-# Format code
+# Lint and auto-fix with Ruff (replaces flake8, pylint)
+uv run ruff check --fix .
+
+# Format code with Ruff (replaces black, isort)
 uv run ruff format .
 
-# Lint code
-uv run ruff check .
+# Type checking with mypy
+uv run mypy src/ai_task_notify_hook --ignore-missing-imports
 
-# Type checking
-uv run mypy notify.py --ignore-missing-imports
-
-# Security scan
-uv run bandit -r .
+# Run all checks together
+uv run ruff check --fix . && uv run ruff format . && uv run mypy src/ai_task_notify_hook
 ```
 
 ### Testing
@@ -74,9 +74,11 @@ uv run python -c "import notify; print('✓ Import successful')"
 ### Python Style Guide
 
 - Follow [PEP 8](https://pep8.org/)
-- Use [Ruff](https://docs.astral.sh/ruff/) for formatting and linting
-- Include type hints for all functions
+- Use [Ruff](https://docs.astral.sh/ruff/) for formatting and linting (replaces flake8, black, isort, pylint)
+- 99 character line length (configured in pyproject.toml)
+- Include type hints for all functions (Python 3.12+)
 - Follow EAFP (Easier to Ask for Forgiveness than Permission) style
+- Use double quotes for strings (configured in Ruff)
 
 ### Code Examples
 

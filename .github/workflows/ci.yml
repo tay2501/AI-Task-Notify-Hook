@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  PYTHON_VERSION: '3.12'
+  PYTHON_VERSION: '3.13'
 
 jobs:
   test:
@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.12', '3.13']
+        python-version: ['3.13']
 
     steps:
     - name: Checkout code
@@ -36,42 +36,38 @@ jobs:
 
     - name: Check packages can be imported
       run: |
-        uv run python -c "import ai_task_notify_hook.notify; print('✓ notify module imported')"
-        uv run python -c "import ai_task_notify_hook.config.log_config; print('✓ log_config module imported')"
-        uv run python -c "import ai_task_notify_hook.config.config_loader; print('✓ config_loader module imported')"
+        uv run python -c "from ai_task_notify_hook.cli import main; print('CLI module imported')"
+        uv run python -c "from ai_task_notify_hook.config import load_config; print('Config module imported')"
+        uv run python -c "from ai_task_notify_hook.logging import configure_logging; print('Logging module imported')"
 
     - name: Test configuration system
       run: |
         uv run python -c "
-        from ai_task_notify_hook.config.config_loader import load_config, validate_config_file
+        from ai_task_notify_hook.config import load_config, validate_config_file
         print('Testing configuration system...')
         try:
-            # Test configuration loading
             config = load_config()
-            print(f'✓ Config loaded: app_name={config.notification.app_name}')
-
-            # Test configuration validation
+            print(f'Config loaded: timeout={config.notification.timeout}')
             is_valid = validate_config_file()
-            print(f'✓ Config validation: {is_valid}')
-
-            print('✓ Configuration system working')
+            print(f'Config validation: {is_valid}')
+            print('Configuration system working')
         except Exception as e:
-            print(f'✗ Configuration error: {e}')
+            print(f'Configuration error: {e}')
             exit(1)
         "
 
     - name: Test logging system
       run: |
         uv run python -c "
-        from ai_task_notify_hook.config.log_config import configure_logging, get_logger
+        from ai_task_notify_hook.logging import configure_logging, get_logger
         print('Testing logging system...')
         try:
             configure_logging()
             logger = get_logger('test')
             logger.info('Test log message', test_param='value')
-            print('✓ Logging system working')
+            print('Logging system working')
         except Exception as e:
-            print(f'✗ Logging error: {e}')
+            print(f'Logging error: {e}')
             exit(1)
         "
 
@@ -95,18 +91,14 @@ jobs:
     - name: Install dependencies
       run: uv sync --dev
 
-    - name: Add development dependencies
-      run: |
-        uv add --dev ruff mypy
+    - name: Run Ruff linting
+      run: uv run ruff check . --output-format=github
 
-    - name: Run ruff check
-      run: uv run ruff check .
-
-    - name: Run ruff format check
+    - name: Run Ruff format check
       run: uv run ruff format --check .
 
     - name: Run mypy type checking
-      run: uv run mypy src/ai_task_notify_hook --ignore-missing-imports
+      run: uv run mypy components bases --strict
 
   security:
     name: Security Scan
@@ -128,26 +120,8 @@ jobs:
     - name: Install dependencies
       run: uv sync --dev
 
-    - name: Add security tools
-      run: |
-        uv add --dev bandit safety
+    - name: Run Ruff security checks (S rules)
+      run: uv run ruff check . --select S --output-format=github
 
-    - name: Run bandit security linter
-      run: uv run bandit -r . -f json -o bandit-report.json || true
-
-    - name: Upload bandit report
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: bandit-report
-        path: bandit-report.json
-
-    - name: Run safety check
-      run: uv run safety check --json --output safety-report.json || true
-
-    - name: Upload safety report
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: safety-report
-        path: safety-report.json
+    - name: Run Ruff all checks with statistics
+      run: uv run ruff check . --statistics

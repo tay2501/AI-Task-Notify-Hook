@@ -1,9 +1,15 @@
-"""Tests for config loader module."""
+"""Tests for config loader module.
+
+This test suite validates configuration loading and validation functionality,
+including EAFP-style error handling, default configuration fallback, and
+edge cases for file I/O operations.
+"""
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -67,6 +73,16 @@ class TestLoadConfig:
 
         with pytest.raises(ConfigurationError, match="Failed to load"):
             load_config(config_path)
+
+    def test_load_config_os_error(self, tmp_path: Path) -> None:
+        """Test error handling for OS-level errors (e.g., permission denied)."""
+        config_path = tmp_path / "config.json"
+        config_path.write_text('{"version": "1.0.0"}', encoding="utf-8")
+
+        # Mock pathlib.Path.open to raise OSError
+        with patch("pathlib.Path.open", side_effect=OSError("Permission denied")):
+            with pytest.raises(ConfigurationError, match="Failed to read configuration file"):
+                load_config(config_path)
 
 
 class TestValidateConfigFile:

@@ -1,16 +1,21 @@
 """Shared data models and enums for AI Task Notify Hook.
 
 This module contains core data models and enumerations used across
-all components. Models are simple, frozen dataclasses with no dependencies
-on other components, ensuring loose coupling.
+all components. Models use Pydantic for validation and StrEnum for
+better string handling, ensuring loose coupling.
 """
 
-from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
+
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
-class NotificationLevel(Enum):
-    """Notification severity levels."""
+class NotificationLevel(StrEnum):
+    """Notification severity levels.
+
+    Using StrEnum (Python 3.11+) provides automatic string conversion
+    and better type safety compared to regular Enum.
+    """
 
     INFO = "info"
     SUCCESS = "success"
@@ -18,8 +23,12 @@ class NotificationLevel(Enum):
     ERROR = "error"
 
 
-class LogLevel(Enum):
-    """Logging levels."""
+class LogLevel(StrEnum):
+    """Logging levels.
+
+    Using StrEnum (Python 3.11+) provides automatic string conversion
+    and better type safety compared to regular Enum.
+    """
 
     DEBUG = "debug"
     INFO = "info"
@@ -28,27 +37,41 @@ class LogLevel(Enum):
     CRITICAL = "critical"
 
 
-@dataclass(frozen=True)
-class NotificationRequest:
-    """Represents a notification request.
+class NotificationRequest(BaseModel):
+    """Represents a notification request with Pydantic validation.
+
+    Using Pydantic provides automatic validation, better error messages,
+    and improved type safety compared to dataclasses.
 
     Attributes:
-        title: Notification title text
-        message: Notification message body
+        title: Notification title text (non-empty, whitespace trimmed)
+        message: Notification message body (non-empty, whitespace trimmed)
         level: Notification severity level
         timeout: Display timeout in seconds (1-300)
     """
 
-    title: str
-    message: str
-    level: NotificationLevel = NotificationLevel.INFO
-    timeout: int = 10
+    model_config = ConfigDict(frozen=True, strict=True)
 
-    def __post_init__(self) -> None:
-        """Validate notification request data."""
-        if not self.title or not self.title.strip():
-            raise ValueError("Title cannot be empty")
-        if not self.message or not self.message.strip():
-            raise ValueError("Message cannot be empty")
-        if not 1 <= self.timeout <= 300:
-            raise ValueError("Timeout must be between 1 and 300 seconds")
+    title: str = Field(min_length=1, description="Notification title")
+    message: str = Field(min_length=1, description="Notification message body")
+    level: NotificationLevel = NotificationLevel.INFO
+    timeout: int = Field(default=10, ge=1, le=300, description="Display timeout in seconds")
+
+    @field_validator("title", "message")
+    @classmethod
+    def strip_and_validate_text(cls, v: str) -> str:
+        """Strip whitespace and validate text is not empty.
+
+        Args:
+            v: Input string value
+
+        Returns:
+            Stripped string value
+
+        Raises:
+            ValueError: If stripped string is empty
+        """
+        stripped = v.strip()
+        if not stripped:
+            raise ValueError("Text cannot be empty or whitespace-only")
+        return stripped

@@ -1,19 +1,7 @@
-==============
-API Reference
-==============
-
-This section provides detailed API documentation for all modules in the
-Ai-task Notify Hook package.
+ai_task_notify_hook
+===================
 
 .. toctree::
    :maxdepth: 4
 
-   ai_task_notify_hook
-
-Main Package
-============
-
-.. automodule:: ai_task_notify_hook
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   cli

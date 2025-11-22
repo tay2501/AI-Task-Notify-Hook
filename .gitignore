@@ -164,8 +164,10 @@ cython_debug/
 # VS Code
 .vscode/
 
-# uv specific
+# uv specific (Python package manager)
+.uv/
 .uv_cache/
+.python-version
 # Keep uv.lock for reproducible builds
 # uv.lock
 
@@ -173,7 +175,13 @@ cython_debug/
 .ruff_cache/
 
 # Type checkers
+.mypy_cache/
 .pyright_cache/
+.pytype/
+
+# Pytest
+.pytest_cache/
+.benchmarks/
 
 # Temporary files
 *.tmp

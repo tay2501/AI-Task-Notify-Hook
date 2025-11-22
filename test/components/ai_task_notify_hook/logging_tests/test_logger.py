@@ -1,9 +1,14 @@
-"""Tests for logging component."""
+"""Tests for logging component.
+
+This test suite validates structured logging configuration using structlog,
+including both TTY (terminal) and non-TTY (production) environments.
+"""
 
 from __future__ import annotations
 
+from unittest.mock import patch
+
 import pytest
-from structlog.stdlib import BoundLogger
 
 from ai_task_notify_hook.logging import configure_logging, get_logger
 from ai_task_notify_hook.models import LogLevel
@@ -30,12 +35,30 @@ class TestConfigureLogging:
         assert hasattr(logger, "info")
         assert hasattr(logger, "debug")
 
-    def test_configure_logging_different_levels(self) -> None:
-        """Test configuration with different log levels."""
-        for level in LogLevel:
-            configure_logging(log_level=level)
-            logger = get_logger("test")
+    @pytest.mark.parametrize("log_level", list(LogLevel))
+    def test_configure_logging_all_levels(self, log_level: LogLevel) -> None:
+        """Test configuration with all available log levels."""
+        configure_logging(log_level=log_level)
+        logger = get_logger("test")
+        assert logger is not None
+        assert hasattr(logger, "info")
+
+    def test_configure_logging_tty_environment(self) -> None:
+        """Test logging configuration in TTY environment (terminal)."""
+        with patch("sys.stderr.isatty", return_value=True):
+            configure_logging()
+            logger = get_logger("test_tty")
             assert logger is not None
+            # In TTY mode, ConsoleRenderer should be used
+            assert hasattr(logger, "info")
+
+    def test_configure_logging_non_tty_environment(self) -> None:
+        """Test logging configuration in non-TTY environment (production)."""
+        with patch("sys.stderr.isatty", return_value=False):
+            configure_logging()
+            logger = get_logger("test_non_tty")
+            assert logger is not None
+            # In non-TTY mode, JSONRenderer should be used
             assert hasattr(logger, "info")
 
 

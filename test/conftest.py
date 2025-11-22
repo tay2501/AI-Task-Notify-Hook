@@ -12,8 +12,14 @@ if TYPE_CHECKING:
     from collections.abc import Generator
 
 
+# Pytest configuration
+def pytest_configure(config: pytest.Config) -> None:
+    """Configure pytest markers."""
+    config.addinivalue_line("markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')")
+
+
 @pytest.fixture
-def tmp_config_file(tmp_path: Path) -> Generator[Path, None, None]:
+def tmp_config_file(tmp_path: Path) -> Generator[Path]:
     """Create a temporary configuration file for testing.
 
     Args:
@@ -29,7 +35,7 @@ def tmp_config_file(tmp_path: Path) -> Generator[Path, None, None]:
         "notification": {"timeout": 10},
     }
     config_path.write_text(json.dumps(config_data), encoding="utf-8")
-    yield config_path
+    return config_path
 
 
 @pytest.fixture
@@ -44,3 +50,30 @@ def sample_notification_data() -> dict[str, str | int]:
         "message": "This is a test message",
         "timeout": 5,
     }
+
+
+@pytest.fixture
+def sample_valid_config() -> dict[str, bool | str | dict[str, int]]:
+    """Provide sample valid configuration data for testing.
+
+    Returns:
+        Dictionary with valid configuration parameters
+    """
+    return {
+        "version": "1.0.0",
+        "debug": False,
+        "notification": {"timeout": 15},
+    }
+
+
+@pytest.fixture(params=["info", "success", "warning", "error"])
+def notification_level_string(request: pytest.FixtureRequest) -> str:
+    """Parametrized fixture providing all notification level strings.
+
+    Args:
+        request: Pytest fixture request object
+
+    Returns:
+        Notification level string
+    """
+    return request.param

@@ -2,6 +2,9 @@
 
 This module defines a hierarchy of custom exceptions following Python best practices.
 All exceptions inherit from a base exception for easy catching.
+
+Use Python's standard exception chaining with 'raise ... from ...' syntax instead of
+custom __init__ and __str__ methods. This provides better traceback and debugging.
 """
 
 
@@ -10,24 +13,13 @@ class NotificationError(Exception):
 
     This is the base class for all custom exceptions in the application.
     Use this to catch any application-specific error.
+
+    Example:
+        try:
+            risky_operation()
+        except SomeError as e:
+            raise NotificationError("Operation failed") from e
     """
-
-    def __init__(self, message: str, cause: Exception | None = None) -> None:
-        """Initialize the exception.
-
-        Args:
-            message: Human-readable error message
-            cause: Optional underlying exception that caused this error
-        """
-        super().__init__(message)
-        self.message = message
-        self.cause = cause
-
-    def __str__(self) -> str:
-        """Return string representation of the error."""
-        if self.cause:
-            return f"{self.message} (caused by: {self.cause!r})"
-        return self.message
 
 
 class ConfigurationError(NotificationError):
