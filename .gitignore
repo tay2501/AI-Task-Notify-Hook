@@ -210,3 +210,6 @@ desktop.ini
 logs/*.log
 logs/*.log.*
 logs/backup/
+
+# Deprecated src/ directory (removed in Phase 1 refactoring)
+src/

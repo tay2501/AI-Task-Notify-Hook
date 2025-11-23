@@ -8,7 +8,7 @@ edge cases for file I/O operations.
 from __future__ import annotations
 
 import json
-from pathlib import Path
+from typing import TYPE_CHECKING
 from unittest.mock import patch
 
 import pytest
@@ -16,6 +16,9 @@ import pytest
 from ai_task_notify_hook.config import load_config, validate_config_file
 from ai_task_notify_hook.config.models import ApplicationConfig
 from ai_task_notify_hook.validation.exceptions import ConfigurationError
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 class TestLoadConfig:
@@ -80,9 +83,11 @@ class TestLoadConfig:
         config_path.write_text('{"version": "1.0.0"}', encoding="utf-8")
 
         # Mock pathlib.Path.open to raise OSError
-        with patch("pathlib.Path.open", side_effect=OSError("Permission denied")):
-            with pytest.raises(ConfigurationError, match="Failed to read configuration file"):
-                load_config(config_path)
+        with (
+            patch("pathlib.Path.open", side_effect=OSError("Permission denied")),
+            pytest.raises(ConfigurationError, match="Failed to read configuration file"),
+        ):
+            load_config(config_path)
 
 
 class TestValidateConfigFile:

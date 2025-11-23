@@ -8,12 +8,13 @@ from __future__ import annotations
 
 import logging
 import sys
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import structlog
 
 if TYPE_CHECKING:
     from structlog.stdlib import BoundLogger
+    from structlog.typing import Processor
 
 from ai_task_notify_hook.models import LogLevel
 
@@ -39,13 +40,14 @@ def configure_logging(log_level: LogLevel = LogLevel.INFO) -> None:
     )
 
     # Shared processors for all environments
-    shared_processors = [
+    shared_processors: list[Processor] = [
         structlog.contextvars.merge_contextvars,
         structlog.stdlib.add_log_level,
         structlog.processors.TimeStamper(fmt="iso", utc=True),
     ]
 
     # Choose renderer based on environment
+    processors: list[Processor]
     if sys.stderr.isatty():
         # Pretty printing for terminal (respects FORCE_COLOR/NO_COLOR)
         processors = [
@@ -82,4 +84,4 @@ def get_logger(name: str | None = None) -> BoundLogger:
         >>> logger = get_logger(__name__)
         >>> logger.info("Application started")
     """
-    return structlog.get_logger(name)
+    return cast("BoundLogger", structlog.get_logger(name))

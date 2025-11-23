@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import pytest
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from pathlib import Path
 
 
 # Pytest configuration
@@ -19,13 +18,13 @@ def pytest_configure(config: pytest.Config) -> None:
 
 
 @pytest.fixture
-def tmp_config_file(tmp_path: Path) -> Generator[Path]:
+def tmp_config_file(tmp_path: Path) -> Path:
     """Create a temporary configuration file for testing.
 
     Args:
         tmp_path: Pytest's temporary directory fixture
 
-    Yields:
+    Returns:
         Path to the temporary config file
     """
     config_path = tmp_path / "config.json"
@@ -76,4 +75,4 @@ def notification_level_string(request: pytest.FixtureRequest) -> str:
     Returns:
         Notification level string
     """
-    return request.param
+    return cast("str", request.param)

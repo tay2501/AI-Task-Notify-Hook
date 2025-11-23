@@ -8,6 +8,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from ai_task_notify_hook.cli.core import main
+from ai_task_notify_hook.validation import NotificationError
 
 
 class TestMain:
@@ -92,12 +93,12 @@ class TestMain:
         mock_load_config: Mock,
         mock_show_notification: Mock,
     ) -> None:
-        """Test handling of runtime errors."""
+        """Test handling of notification errors."""
         mock_config = Mock()
         mock_config.version = "1.0.0"
         mock_config.notification.timeout = 10
         mock_load_config.return_value = mock_config
-        mock_show_notification.side_effect = RuntimeError("Test error")
+        mock_show_notification.side_effect = NotificationError("Test error")
 
         test_args = ["notify", "Title", "Message"]
         with patch.object(sys, "argv", test_args):

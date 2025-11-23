@@ -78,6 +78,14 @@ module = ["plyer.*"]
 ignore_missing_imports = true
 follow_imports = "skip"
 
+[[tool.mypy.overrides]]
+module = ["pytest_benchmark.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["docs.source.conf"]
+ignore_errors = true
+
 [tool.ruff]
 target-version = "py313"
 line-length = 99
@@ -162,8 +170,12 @@ unfixable = []
 [tool.ruff.lint.per-file-ignores]
 "test/**/*.py" = [
     "S101",    # allow asserts in tests
+    "S404",    # allow subprocess import in tests
+    "S607",    # allow partial executable paths in tests
+    "SLF001",  # allow private member access in tests
     "ANN",     # no type annotations required in tests
     "PLR2004", # allow magic values in tests
+    "PLR6301", # allow instance methods in test classes
     "ARG",     # allow unused arguments in test fixtures
     "F841",    # allow unused variables in tests (benchmark results)
     "PLC0415", # allow imports in test functions
@@ -173,6 +185,9 @@ unfixable = []
 "docs/source/conf.py" = [
     "A001",    # allow shadowing builtins in Sphinx config
     "ANN",     # no type annotations in Sphinx config
+]
+"components/ai_task_notify_hook/notification/core.py" = [
+    "PLR6301", # send_notification must be instance method (Protocol pattern)
 ]
 "src/**/*.py" = [
     "ALL",     # ignore old src directory (deprecated)

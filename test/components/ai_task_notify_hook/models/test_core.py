@@ -25,7 +25,7 @@ def test_notification_level_all_exist() -> None:
 def test_notification_level_enum_equality() -> None:
     """Test enum equality comparison."""
     assert NotificationLevel.INFO == NotificationLevel.INFO
-    assert NotificationLevel.ERROR != NotificationLevel.WARNING
+    assert NotificationLevel.ERROR != NotificationLevel.WARNING  # type: ignore[comparison-overlap]
 
 
 def test_notification_level_str_conversion() -> None:
@@ -83,7 +83,7 @@ def test_notification_request_immutable() -> None:
     request = NotificationRequest(title="Test", message="Test message")
 
     with pytest.raises(ValidationError, match="frozen"):
-        request.title = "Modified"  # type: ignore[misc]
+        request.title = "Modified"
 
 
 def test_notification_request_whitespace_stripping() -> None:
@@ -96,7 +96,7 @@ def test_notification_request_whitespace_stripping() -> None:
 
 def test_notification_request_empty_title() -> None:
     """Test validation fails for empty title."""
-    with pytest.raises(ValueError, match="String should have at least 1 character|empty"):
+    with pytest.raises(ValueError, match=r"String should have at least 1 character|empty"):
         NotificationRequest(title="", message="Test message")
 
 
@@ -108,7 +108,7 @@ def test_notification_request_whitespace_only_title() -> None:
 
 def test_notification_request_empty_message() -> None:
     """Test validation fails for empty message."""
-    with pytest.raises(ValueError, match="String should have at least 1 character|empty"):
+    with pytest.raises(ValueError, match=r"String should have at least 1 character|empty"):
         NotificationRequest(title="Test", message="")
 
 
