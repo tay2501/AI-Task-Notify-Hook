@@ -179,6 +179,7 @@ unfixable = []
     "ARG",     # allow unused arguments in test fixtures
     "F841",    # allow unused variables in tests (benchmark results)
     "PLC0415", # allow imports in test functions
+    "PLC2701", # allow private name imports in tests
     "BLE001",  # allow blind exceptions in tests
     "RUF059",  # allow unpacked unused variables in tests
 ]
@@ -188,6 +189,10 @@ unfixable = []
 ]
 "components/ai_task_notify_hook/notification/core.py" = [
     "PLR6301", # send_notification must be instance method (Protocol pattern)
+    "PLW0603", # global statement required for dependency injection pattern
+]
+"components/ai_task_notify_hook/validation/core.py" = [
+    "PLC0415", # import in try/except required for error handling
 ]
 "src/**/*.py" = [
     "ALL",     # ignore old src directory (deprecated)
