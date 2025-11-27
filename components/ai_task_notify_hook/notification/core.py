@@ -1,14 +1,19 @@
 """Core notification functionality component.
 
-This component handles the core logic for displaying Windows notifications.
+This component handles the core logic for displaying desktop notifications.
 Follows single responsibility principle and is designed for high reusability.
 
 Supports dependency injection via NotificationProvider Protocol for extensibility
 (e.g., Email, SMS, Slack notifications).
+
+Updated to use desktop-notifier library (v6+) for modern, cross-platform notifications
+with better platform API support and future extensibility.
 """
 
 from __future__ import annotations
 
+import asyncio
+import sys
 from functools import lru_cache
 from typing import TYPE_CHECKING
 
@@ -19,15 +24,39 @@ from ai_task_notify_hook.models import NotificationLevel, NotificationRequest
 from ai_task_notify_hook.validation import NotificationBackendError, NotificationError
 
 try:
-    from plyer import notification
+    from desktop_notifier import DesktopNotifier, Urgency
 except ImportError as exc:
-    # Fallback handling for environments where plyer is unavailable
-    notification = None
+    # Fallback handling for environments where desktop-notifier is unavailable
+    DesktopNotifier = None  # type: ignore[misc,assignment]
+    Urgency = None  # type: ignore[misc,assignment]
     import_error = exc
 
 
 class StandardNotificationProvider:
-    """Standard implementation of NotificationProvider protocol."""
+    """Standard implementation of NotificationProvider protocol using desktop-notifier.
+
+    Uses desktop-notifier library which provides:
+    - Modern platform APIs (no deprecated APIs like macOS NSUserNotificationCenter)
+    - Better cross-platform support (Windows, macOS, Linux)
+    - Interactive features (buttons, reply fields) for future extensibility
+    - Pure Python implementation (no compiled extensions)
+    """
+
+    def __init__(self, app_name: str = "AI Task Notify Hook") -> None:
+        """Initialize notification provider.
+
+        Args:
+            app_name: Application name shown in notifications
+
+        Raises:
+            NotificationBackendError: If desktop-notifier is not available
+        """
+        if DesktopNotifier is None:
+            raise NotificationBackendError(
+                "desktop-notifier library not properly imported"
+            ) from import_error
+
+        self._notifier = DesktopNotifier(app_name=app_name)
 
     def send_notification(self, request: NotificationRequest) -> bool:
         """Send a notification.
@@ -39,46 +68,59 @@ class StandardNotificationProvider:
             True if notification was sent successfully, False otherwise
 
         Raises:
-            NotificationBackendError: If plyer is not available or platform
-                not supported
+            NotificationBackendError: If desktop-notifier is not available
             NotificationError: For other notification failures
         """
-        if notification is None:
-            raise NotificationBackendError(
-                "plyer library not properly imported"
-            ) from import_error
-
         try:
-            # Map notification level to app icon if needed
-            app_icon = StandardNotificationProvider._get_icon_for_level(request.level)
+            # Map notification level to urgency
+            urgency = self._get_urgency_for_level(request.level)
 
-            notification.notify(
-                title=request.title,
-                message=request.message,
-                timeout=request.timeout,
-                app_icon=app_icon,
-            )
+            # Prepare timeout (Linux only, in milliseconds)
+            timeout_ms: int | None = None
+            if sys.platform.startswith("linux"):
+                timeout_ms = request.timeout * 1000  # Convert seconds to milliseconds
+
+            # Send notification using asyncio
+            # Note: timeout is only supported on Linux
+            if timeout_ms is not None:
+                asyncio.run(
+                    self._notifier.send(
+                        title=request.title,
+                        message=request.message,
+                        urgency=urgency,
+                        timeout=timeout_ms,
+                    )
+                )
+            else:
+                asyncio.run(
+                    self._notifier.send(
+                        title=request.title,
+                        message=request.message,
+                        urgency=urgency,
+                    )
+                )
             return True
 
-        except AttributeError as exc:
-            raise NotificationBackendError(
-                "plyer notification method not available on this platform"
-            ) from exc
         except Exception as exc:
             raise NotificationError(f"Failed to show notification: {exc}") from exc
 
     @staticmethod
-    def _get_icon_for_level(_level: NotificationLevel) -> str | None:
-        """Get system icon path based on notification level.
+    def _get_urgency_for_level(level: NotificationLevel) -> Urgency:
+        """Map notification level to desktop-notifier urgency.
 
         Args:
-            _level: Notification level (unused, reserved for future platform-specific icons)
+            level: Notification level from our model
 
         Returns:
-            Icon path or None for default
+            Urgency level for desktop-notifier
         """
-        # Could be extended to return platform-specific icons
-        return None
+        if Urgency is None:
+            raise NotificationBackendError("desktop-notifier not available")
+
+        # Map levels to urgency (ERROR is the highest severity in NotificationLevel)
+        if level == NotificationLevel.ERROR:
+            return Urgency.Critical
+        return Urgency.Normal
 
 
 # Global default provider (supports dependency injection)
@@ -91,7 +133,7 @@ def _get_cached_standard_provider() -> StandardNotificationProvider:
 
     Uses functools.lru_cache for zero-overhead singleton pattern.
     This prevents unnecessary instance creation on every notification call,
-    improving performance by ~15% (1,412ns → 1,200ns).
+    improving performance by caching the DesktopNotifier instance.
 
     Returns:
         Singleton StandardNotificationProvider instance
@@ -163,7 +205,7 @@ def show_notification(
         title: Notification title
         message: Notification message body
         level: Notification severity level
-        timeout: Notification timeout in seconds
+        timeout: Notification timeout in seconds (Linux only, ignored on Windows/macOS)
         provider: Optional custom provider (overrides default)
 
     Raises:
@@ -180,6 +222,10 @@ def show_notification(
         With custom provider (dependency injection):
         >>> custom = EmailNotificationProvider()  # doctest: +SKIP
         >>> show_notification("Alert", "Server down", provider=custom)  # doctest: +SKIP
+
+    Note:
+        The timeout parameter is only supported on Linux. On Windows and macOS,
+        notifications follow platform-specific timeout behavior.
     """
     notification_provider = provider or get_default_provider()
     request = NotificationRequest(
