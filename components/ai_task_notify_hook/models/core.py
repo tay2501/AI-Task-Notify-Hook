@@ -3,6 +3,11 @@
 This module contains core data models and enumerations used across
 all components. Models use Pydantic for validation and StrEnum for
 better string handling, ensuring loose coupling.
+
+Updated with Pydantic v2 performance best practices:
+- Strict type validation for maximum performance
+- Frozen models for immutability and safety
+- Declarative field constraints (processed by Rust engine)
 """
 
 from enum import StrEnum

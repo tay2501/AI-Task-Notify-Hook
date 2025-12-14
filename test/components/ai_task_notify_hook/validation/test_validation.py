@@ -79,42 +79,42 @@ class TestValidateBackendAvailable:
 
     @patch("ai_task_notify_hook.validation.core.platform.system")
     def test_validate_backend_available_success(self, mock_system: MagicMock) -> None:
-        """Test validation passes when plyer is properly installed."""
+        """Test validation passes when desktop-notifier is properly installed."""
         # Arrange
         mock_system.return_value = "Windows"
 
         # Act & Assert
-        # Real plyer import - should succeed in test environment
+        # Real desktop-notifier import - should succeed in test environment
         assert validate_backend_available() is True
 
     def test_validate_backend_import_error(self) -> None:
-        """Test validation fails when plyer cannot be imported."""
-        # Arrange - mock builtins.__import__ to simulate missing plyer
+        """Test validation fails when desktop-notifier cannot be imported."""
+        # Arrange - mock builtins.__import__ to simulate missing desktop-notifier
         original_import = __builtins__["__import__"]  # type: ignore[index]
 
         def mock_import(name: str, *args: object, **kwargs: object) -> object:
-            if name == "plyer":
-                raise ImportError("No module named 'plyer'")
+            if name == "desktop_notifier":
+                raise ImportError("No module named 'desktop_notifier'")
             return original_import(name, *args, **kwargs)
 
         # Act & Assert
         with (
             patch("builtins.__import__", side_effect=mock_import),
-            pytest.raises(NotificationBackendError, match="plyer library not installed"),
+            pytest.raises(NotificationBackendError, match="desktop-notifier library not installed"),
         ):
             validate_backend_available()
 
     @patch("ai_task_notify_hook.validation.core.platform.system")
-    def test_validate_backend_no_notify_method(self, mock_system: MagicMock) -> None:
-        """Test validation fails when notification.notify method is missing."""
+    def test_validate_backend_class_not_callable(self, mock_system: MagicMock) -> None:
+        """Test validation fails when DesktopNotifier class is not callable."""
         # Arrange
         mock_system.return_value = "Linux"
-        mock_notification = MagicMock(spec=[])  # Empty spec - no 'notify' method
+        mock_desktop_notifier = "NotCallable"  # String instead of class
 
         # Act & Assert
         with (
-            patch.dict("sys.modules", {"plyer": MagicMock(notification=mock_notification)}),
-            pytest.raises(NotificationBackendError, match="notify method not available"),
+            patch.dict("sys.modules", {"desktop_notifier": MagicMock(DesktopNotifier=mock_desktop_notifier)}),
+            pytest.raises(NotificationBackendError, match="DesktopNotifier class not available"),
         ):
             validate_backend_available()
 

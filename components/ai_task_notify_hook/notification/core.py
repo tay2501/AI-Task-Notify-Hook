@@ -168,6 +168,20 @@ def set_default_provider(provider: NotificationProvider) -> None:
     _default_provider = provider
 
 
+def _reset_default_provider() -> None:
+    """Reset default provider to None (for testing purposes).
+
+    This function is primarily used by test fixtures to ensure clean state
+    between test runs. It resets the global _default_provider to None,
+    allowing the next call to get_default_provider() to create a fresh
+    StandardNotificationProvider instance.
+
+    Internal use only - not part of the public API.
+    """
+    global _default_provider
+    _default_provider = None
+
+
 def get_default_provider() -> NotificationProvider:
     """Get the current default notification provider.
 

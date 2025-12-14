@@ -2,6 +2,8 @@
 
 Comprehensive performance tests using cProfile and memory_profiler patterns
 to identify bottlenecks and track performance metrics over time.
+
+Updated for desktop-notifier library (async notification support).
 """
 
 from __future__ import annotations
@@ -10,7 +12,7 @@ import cProfile
 import pstats
 from io import StringIO
 from typing import TYPE_CHECKING
-from unittest.mock import patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -25,10 +27,15 @@ from ai_task_notify_hook.notification import show_notification
 class TestCLIPerformanceProfile:
     """Performance profiling tests for CLI workflows."""
 
-    @patch("ai_task_notify_hook.notification.core.notification")
+    @patch("ai_task_notify_hook.notification.core.DesktopNotifier")
     @patch("sys.argv", ["notify.py", "Profiling Test", "Performance measurement"])
-    def test_cli_execution_profile(self, mock_notification: object) -> None:
+    def test_cli_execution_profile(self, mock_notifier_class: MagicMock) -> None:
         """Profile complete CLI execution path."""
+        # Arrange
+        mock_instance = MagicMock()
+        mock_instance.send = AsyncMock()
+        mock_notifier_class.return_value = mock_instance
+
         # Create profiler
         profiler = cProfile.Profile()
 
@@ -55,9 +62,14 @@ class TestCLIPerformanceProfile:
         print("=" * 80)
         print(output)
 
-    @patch("ai_task_notify_hook.notification.core.notification")
-    def test_notification_component_profile(self, mock_notification: object) -> None:
+    @patch("ai_task_notify_hook.notification.core.DesktopNotifier")
+    def test_notification_component_profile(self, mock_notifier_class: MagicMock) -> None:
         """Profile notification component in isolation."""
+        # Arrange
+        mock_instance = MagicMock()
+        mock_instance.send = AsyncMock()
+        mock_notifier_class.return_value = mock_instance
+
         profiler = cProfile.Profile()
 
         # Profile notification calls
@@ -126,9 +138,14 @@ class TestModelPerformanceProfile:
 class TestBottleneckIdentification:
     """Tests focused on identifying performance bottlenecks."""
 
-    @patch("ai_task_notify_hook.notification.core.notification")
-    def test_identify_slowest_component(self, mock_notification: object) -> None:
+    @patch("ai_task_notify_hook.notification.core.DesktopNotifier")
+    def test_identify_slowest_component(self, mock_notifier_class: MagicMock) -> None:
         """Identify the slowest component in notification flow."""
+        # Arrange
+        mock_instance = MagicMock()
+        mock_instance.send = AsyncMock()
+        mock_notifier_class.return_value = mock_instance
+
         profiler = cProfile.Profile()
 
         # Profile complete flow
@@ -160,9 +177,14 @@ class TestBottleneckIdentification:
         print(f"Total function calls: {stats.total_calls}")  # type: ignore[attr-defined]
         print(f"Primitive calls: {stats.prim_calls}")  # type: ignore[attr-defined]
 
-    @patch("ai_task_notify_hook.notification.core.notification")
-    def test_memory_allocation_pattern(self, mock_notification: object) -> None:
+    @patch("ai_task_notify_hook.notification.core.DesktopNotifier")
+    def test_memory_allocation_pattern(self, mock_notifier_class: MagicMock) -> None:
         """Test memory allocation patterns during notification flow."""
+        # Arrange
+        mock_instance = MagicMock()
+        mock_instance.send = AsyncMock()
+        mock_notifier_class.return_value = mock_instance
+
         import tracemalloc
 
         # Start memory tracking
@@ -203,11 +225,15 @@ class TestPerformanceRegression:
     """Tests to detect performance regressions."""
 
     @pytest.mark.benchmark(group="notification-flow")
-    @patch("ai_task_notify_hook.notification.core.notification")
+    @patch("ai_task_notify_hook.notification.core.DesktopNotifier")
     def test_benchmark_notification_flow(
-        self, mock_notification: object, benchmark: BenchmarkFixture
+        self, mock_notifier_class: MagicMock, benchmark: BenchmarkFixture
     ) -> None:
         """Benchmark complete notification flow for regression detection."""
+        # Arrange
+        mock_instance = MagicMock()
+        mock_instance.send = AsyncMock()
+        mock_notifier_class.return_value = mock_instance
 
         def notification_flow() -> None:
             show_notification(
@@ -244,9 +270,14 @@ class TestPerformanceRegression:
 class TestScalabilityProfile:
     """Tests to profile scalability characteristics."""
 
-    @patch("ai_task_notify_hook.notification.core.notification")
-    def test_throughput_scaling(self, mock_notification: object) -> None:
+    @patch("ai_task_notify_hook.notification.core.DesktopNotifier")
+    def test_throughput_scaling(self, mock_notifier_class: MagicMock) -> None:
         """Test notification throughput with increasing load."""
+        # Arrange
+        mock_instance = MagicMock()
+        mock_instance.send = AsyncMock()
+        mock_notifier_class.return_value = mock_instance
+
         import time
 
         test_sizes = [10, 50, 100, 500]

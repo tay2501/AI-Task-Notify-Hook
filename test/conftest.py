@@ -5,11 +5,13 @@ Modern pytest patterns with:
 - Pydantic v2 model fixtures
 - Parametrized fixtures for comprehensive testing
 - Reusable temporary file fixtures
+- Cache clearing for lru_cache decorated functions
 """
 
 from __future__ import annotations
 
 import json
+from collections.abc import Generator
 from pathlib import Path  # noqa: TC003  # Path is used at runtime for fixtures
 from typing import TYPE_CHECKING
 
@@ -18,6 +20,41 @@ import pytest
 if TYPE_CHECKING:
     from ai_task_notify_hook.config.models import ApplicationConfig, NotificationConfig
     from ai_task_notify_hook.models import NotificationLevel
+
+
+# ============================================================================
+# Global Test Setup/Teardown
+# ============================================================================
+
+
+@pytest.fixture(autouse=True)
+def _clear_lru_caches() -> Generator[None]:
+    """Clear all lru_cache decorated functions and reset global state after each test.
+
+    This prevents cache pollution between tests, ensuring that mocks
+    and patches work correctly in integration tests.
+
+    Automatically runs after every test (autouse=True).
+
+    Yields:
+        None
+    """
+    yield  # Run the test first
+
+    # Clear caches and reset global state after test completes
+    try:
+        from ai_task_notify_hook.notification.core import (
+            _get_cached_standard_provider,
+            _reset_default_provider,
+        )
+        from ai_task_notify_hook.config.loader import _get_config_adapter
+
+        _get_cached_standard_provider.cache_clear()
+        _get_config_adapter.cache_clear()
+        _reset_default_provider()  # Reset global provider state
+    except (ImportError, AttributeError):
+        # Module or function not available in some test contexts
+        pass
 
 
 # Pytest configuration

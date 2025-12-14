@@ -54,41 +54,41 @@ def validate_platform_support() -> bool:
 
 
 def validate_backend_available() -> bool:
-    """Verify plyer notification backend is available.
+    """Verify desktop-notifier backend is available.
 
     Performs comprehensive validation of the notification backend:
-    1. Checks that plyer library is importable
-    2. Verifies notification.notify method exists
+    1. Checks that desktop-notifier library is importable
+    2. Verifies DesktopNotifier class exists
     3. Ensures platform-specific backend is available
 
     Returns:
         True if backend is available and functional
 
     Raises:
-        NotificationBackendError: If plyer import fails or notification
-            method is unavailable on this platform
+        NotificationBackendError: If desktop-notifier import fails or
+            is unavailable on this platform
 
     Examples:
-        >>> validate_backend_available()  # With plyer installed
+        >>> validate_backend_available()  # With desktop-notifier installed
         True
 
-        >>> # Without plyer installed
+        >>> # Without desktop-notifier installed
         >>> validate_backend_available()  # doctest: +SKIP
         Traceback (most recent call last):
-        NotificationBackendError: plyer library not installed...
+        NotificationBackendError: desktop-notifier library not installed...
     """
     try:
-        from plyer import notification
+        from desktop_notifier import DesktopNotifier
     except ImportError as exc:
         raise NotificationBackendError(
-            "plyer library not installed or import failed. "
-            "Install with: uv add plyer"
+            "desktop-notifier library not installed or import failed. "
+            "Install with: uv add desktop-notifier"
         ) from exc
 
-    # Verify notification.notify method exists
-    if not hasattr(notification, "notify"):
+    # Verify DesktopNotifier class is available
+    if not callable(DesktopNotifier):
         raise NotificationBackendError(
-            f"plyer.notification.notify method not available on {platform.system()}. "
+            f"DesktopNotifier class not available on {platform.system()}. "
             "This platform may lack notification backend support."
         )
 

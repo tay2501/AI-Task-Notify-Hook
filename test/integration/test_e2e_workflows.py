@@ -3,11 +3,13 @@
 Comprehensive integration tests that validate the full application workflow
 from CLI entry point through all components to notification display.
 Tests cover success paths and all error scenarios for 100% coverage.
+
+Updated for desktop-notifier library (async notification support).
 """
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -22,46 +24,60 @@ from ai_task_notify_hook.validation import (
 class TestE2ESuccessWorkflow:
     """End-to-end tests for successful notification workflows."""
 
-    @patch("ai_task_notify_hook.notification.core.notification")
+    @patch("ai_task_notify_hook.notification.core.DesktopNotifier")
     @patch("sys.argv", ["notify.py", "Test Title", "Test Message"])
-    def test_complete_workflow_with_defaults(self, mock_notification: MagicMock) -> None:
+    def test_complete_workflow_with_defaults(self, mock_notifier_class: MagicMock) -> None:
         """Test complete workflow from CLI to notification with default config."""
+        # Arrange - Setup async mock for send method
+        mock_instance = MagicMock()
+        mock_instance.send = AsyncMock()
+        mock_notifier_class.return_value = mock_instance
+
         # Act - Run the full application
         main()
 
         # Assert - Notification was sent with correct parameters
-        mock_notification.notify.assert_called_once()
-        call_kwargs = mock_notification.notify.call_args.kwargs
+        mock_instance.send.assert_called_once()
+        call_kwargs = mock_instance.send.call_args.kwargs
         assert call_kwargs["title"] == "Test Title"
         assert call_kwargs["message"] == "Test Message"
-        assert call_kwargs["timeout"] == 10  # Default from config
+        # Note: timeout is only used on Linux, so may not be in kwargs
 
-    @patch("ai_task_notify_hook.notification.core.notification")
+    @patch("ai_task_notify_hook.notification.core.DesktopNotifier")
     @patch("sys.argv", ["notify.py", "Custom", "Message", "--timeout", "30"])
     def test_complete_workflow_with_custom_timeout(
-        self, mock_notification: MagicMock
+        self, mock_notifier_class: MagicMock
     ) -> None:
         """Test complete workflow with custom timeout parameter."""
+        # Arrange
+        mock_instance = MagicMock()
+        mock_instance.send = AsyncMock()
+        mock_notifier_class.return_value = mock_instance
+
         # Act
         main()
 
         # Assert
-        mock_notification.notify.assert_called_once()
-        call_kwargs = mock_notification.notify.call_args.kwargs
+        mock_instance.send.assert_called_once()
+        call_kwargs = mock_instance.send.call_args.kwargs
         assert call_kwargs["title"] == "Custom"
         assert call_kwargs["message"] == "Message"
-        assert call_kwargs["timeout"] == 30
 
-    @patch("ai_task_notify_hook.notification.core.notification")
+    @patch("ai_task_notify_hook.notification.core.DesktopNotifier")
     @patch("sys.argv", ["notify.py", "Integration", "Test with multiple words"])
-    def test_workflow_with_multiword_message(self, mock_notification: MagicMock) -> None:
+    def test_workflow_with_multiword_message(self, mock_notifier_class: MagicMock) -> None:
         """Test workflow handles multi-word messages correctly."""
+        # Arrange
+        mock_instance = MagicMock()
+        mock_instance.send = AsyncMock()
+        mock_notifier_class.return_value = mock_instance
+
         # Act
         main()
 
         # Assert
-        mock_notification.notify.assert_called_once()
-        call_kwargs = mock_notification.notify.call_args.kwargs
+        mock_instance.send.assert_called_once()
+        call_kwargs = mock_instance.send.call_args.kwargs
         assert call_kwargs["message"] == "Test with multiple words"
 
 
@@ -159,50 +175,62 @@ class TestE2EErrorHandling:
 class TestE2EComponentIntegration:
     """Integration tests validating component interactions."""
 
-    @patch("ai_task_notify_hook.notification.core.notification")
+    @patch("ai_task_notify_hook.notification.core.DesktopNotifier")
     @patch("sys.argv", ["notify.py", "Component Test", "All systems integrated"])
     def test_config_logging_notification_integration(
-        self, mock_notification: MagicMock
+        self, mock_notifier_class: MagicMock
     ) -> None:
         """Test integration between config, logging, and notification components."""
+        # Arrange
+        mock_instance = MagicMock()
+        mock_instance.send = AsyncMock()
+        mock_notifier_class.return_value = mock_instance
+
         # Act - This tests the full component stack
         main()
 
         # Assert - All components worked together successfully
-        mock_notification.notify.assert_called_once()
+        mock_instance.send.assert_called_once()
 
         # Verify notification received correct data from config
-        call_kwargs = mock_notification.notify.call_args.kwargs
+        call_kwargs = mock_instance.send.call_args.kwargs
         assert call_kwargs["title"] == "Component Test"
         assert call_kwargs["message"] == "All systems integrated"
-        # Default timeout comes from config component
-        assert isinstance(call_kwargs["timeout"], int)
-        assert call_kwargs["timeout"] > 0
 
-    @patch("ai_task_notify_hook.notification.core.notification")
+    @patch("ai_task_notify_hook.notification.core.DesktopNotifier")
     @patch("sys.argv", ["notify.py", "Validation Test", "Testing validation layer"])
     def test_validation_component_integration(
-        self, mock_notification: MagicMock
+        self, mock_notifier_class: MagicMock
     ) -> None:
         """Test that validation component is properly integrated."""
+        # Arrange
+        mock_instance = MagicMock()
+        mock_instance.send = AsyncMock()
+        mock_notifier_class.return_value = mock_instance
+
         # Act
         main()
 
         # Assert - Validation passed and notification was sent
-        mock_notification.notify.assert_called_once()
+        mock_instance.send.assert_called_once()
 
-    @patch("ai_task_notify_hook.notification.core.notification")
+    @patch("ai_task_notify_hook.notification.core.DesktopNotifier")
     @patch("sys.argv", ["notify.py", "Provider Test", "Testing DI pattern"])
     def test_provider_dependency_injection_integration(
-        self, mock_notification: MagicMock
+        self, mock_notifier_class: MagicMock
     ) -> None:
         """Test that default provider is used correctly through DI pattern."""
+        # Arrange
+        mock_instance = MagicMock()
+        mock_instance.send = AsyncMock()
+        mock_notifier_class.return_value = mock_instance
+
         # Act - Use default provider through DI
         main()
 
         # Assert - Standard provider was used
-        mock_notification.notify.assert_called_once()
-        call_kwargs = mock_notification.notify.call_args.kwargs
+        mock_instance.send.assert_called_once()
+        call_kwargs = mock_instance.send.call_args.kwargs
         assert call_kwargs["title"] == "Provider Test"
         assert call_kwargs["message"] == "Testing DI pattern"
 
@@ -228,31 +256,38 @@ class TestE2EEdgeCases:
 
         assert exc_info.value.code == 4
 
-    @patch("ai_task_notify_hook.notification.core.notification")
+    @patch("ai_task_notify_hook.notification.core.DesktopNotifier")
     @patch("sys.argv", ["notify.py", "Title", "Message", "--timeout", "1"])
-    def test_minimum_timeout_boundary(self, mock_notification: MagicMock) -> None:
+    def test_minimum_timeout_boundary(self, mock_notifier_class: MagicMock) -> None:
         """Test minimum timeout value (boundary condition)."""
+        # Arrange
+        mock_instance = MagicMock()
+        mock_instance.send = AsyncMock()
+        mock_notifier_class.return_value = mock_instance
+
         # Act
         main()
 
         # Assert
-        mock_notification.notify.assert_called_once()
-        call_kwargs = mock_notification.notify.call_args.kwargs
-        assert call_kwargs["timeout"] == 1
+        mock_instance.send.assert_called_once()
 
-    @patch("ai_task_notify_hook.notification.core.notification")
+    @patch("ai_task_notify_hook.notification.core.DesktopNotifier")
     @patch(
         "sys.argv",
         ["notify.py", "Long Title " * 20, "Long Message " * 50, "--timeout", "300"],
     )
-    def test_maximum_values_boundary(self, mock_notification: MagicMock) -> None:
+    def test_maximum_values_boundary(self, mock_notifier_class: MagicMock) -> None:
         """Test maximum timeout and long strings (boundary conditions)."""
+        # Arrange
+        mock_instance = MagicMock()
+        mock_instance.send = AsyncMock()
+        mock_notifier_class.return_value = mock_instance
+
         # Act
         main()
 
         # Assert
-        mock_notification.notify.assert_called_once()
-        call_kwargs = mock_notification.notify.call_args.kwargs
-        assert call_kwargs["timeout"] == 300
+        mock_instance.send.assert_called_once()
+        call_kwargs = mock_instance.send.call_args.kwargs
         assert len(call_kwargs["title"]) > 100
         assert len(call_kwargs["message"]) > 500
