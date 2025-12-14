@@ -3,6 +3,9 @@
 This module defines the Protocol (PEP 544) for notification providers,
 enabling structural subtyping and dependency injection. Follows the
 Open/Closed Principle - open for extension, closed for modification.
+
+Updated to async protocol for better performance and composition with
+modern async notification libraries like desktop-notifier.
 """
 
 from __future__ import annotations
@@ -14,12 +17,15 @@ if TYPE_CHECKING:
 
 
 class NotificationProvider(Protocol):
-    """Protocol for notification providers.
+    """Async protocol for notification providers.
 
-    This protocol defines the interface that all notification providers
+    This protocol defines the async interface that all notification providers
     must implement. Using Protocol (PEP 544) enables structural subtyping,
-    allowing any class with a compatible `send_notification` method to
+    allowing any class with a compatible async `send_notification` method to
     be used as a provider without explicit inheritance.
+
+    The async design enables better performance with modern notification
+    libraries and allows for parallel notification sending via asyncio.gather().
 
     Examples:
         Standard implementation:
@@ -28,10 +34,11 @@ class NotificationProvider(Protocol):
         >>> isinstance(provider, NotificationProvider)  # doctest: +SKIP
         True
 
-        Custom implementation:
+        Custom async implementation:
         >>> class EmailNotificationProvider:
-        ...     def send_notification(self, request: NotificationRequest) -> bool:
-        ...         # Send email notification
+        ...     async def send_notification(self, request: NotificationRequest) -> bool:
+        ...         # Send email notification asynchronously
+        ...         await send_email(request.title, request.message)
         ...         return True
         >>> provider = EmailNotificationProvider()  # doctest: +SKIP
 
@@ -40,8 +47,8 @@ class NotificationProvider(Protocol):
         require `@runtime_checkable` decorator (not used here for performance).
     """
 
-    def send_notification(self, request: NotificationRequest) -> bool:
-        """Send a notification.
+    async def send_notification(self, request: NotificationRequest) -> bool:
+        """Send a notification asynchronously.
 
         Args:
             request: The notification request to send

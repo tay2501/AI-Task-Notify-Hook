@@ -2,9 +2,13 @@
 
 This base provides the command-line interface entry point.
 Thin layer that orchestrates components - follows separation of concerns.
+
+Updated to use fully async notification with asyncio.run() at the CLI boundary,
+eliminating event loop overhead from the notification layer.
 """
 
 import argparse
+import asyncio
 import sys
 
 from pydantic import ValidationError
@@ -20,8 +24,11 @@ from ai_task_notify_hook.validation import (
 )
 
 
-def main() -> None:
-    """Main entry point for command line usage."""
+async def async_main() -> None:
+    """Async main entry point for command line usage.
+
+    Fully async implementation that uses asyncio.run() at the CLI boundary
+    for optimal performance."""
     # Initialize logging first
     configure_logging()
     logger = get_logger("cli")
@@ -63,8 +70,8 @@ Examples:
             timeout=args.timeout,
         )
 
-        # Use notification component
-        show_notification(title=args.title, message=args.message, timeout=args.timeout)
+        # Use notification component (fully async)
+        await show_notification(title=args.title, message=args.message, timeout=args.timeout)
 
         logger.info("Application completed successfully")
 
@@ -111,3 +118,12 @@ Examples:
             exit_code=1,
         )
         sys.exit(1)
+
+
+def main() -> None:
+    """Synchronous entry point that runs async_main with asyncio.
+
+    This function provides a synchronous interface for setuptools entry_points
+    while using asyncio.run() to execute the async_main() function.
+    """
+    asyncio.run(async_main())

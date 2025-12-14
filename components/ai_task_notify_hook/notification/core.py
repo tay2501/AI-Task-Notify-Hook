@@ -58,14 +58,19 @@ class StandardNotificationProvider:
 
         self._notifier = DesktopNotifier(app_name=app_name)
 
-    def send_notification(self, request: NotificationRequest) -> bool:
-        """Send a notification.
+    async def send_notification(self, request: NotificationRequest) -> bool:
+        """Send a notification asynchronously.
+
+        Fully async implementation that directly awaits desktop-notifier's
+        send() method without creating a new event loop. This improves
+        performance by eliminating asyncio.run() overhead and enables
+        better async composition.
 
         Args:
             request: The notification request to send
 
         Returns:
-            True if notification was sent successfully, False otherwise
+            True if notification was sent successfully
 
         Raises:
             NotificationBackendError: If desktop-notifier is not available
@@ -80,24 +85,20 @@ class StandardNotificationProvider:
             if sys.platform.startswith("linux"):
                 timeout_ms = request.timeout * 1000  # Convert seconds to milliseconds
 
-            # Send notification using asyncio
+            # Directly await notification send (no asyncio.run overhead)
             # Note: timeout is only supported on Linux
             if timeout_ms is not None:
-                asyncio.run(
-                    self._notifier.send(
-                        title=request.title,
-                        message=request.message,
-                        urgency=urgency,
-                        timeout=timeout_ms,
-                    )
+                await self._notifier.send(
+                    title=request.title,
+                    message=request.message,
+                    urgency=urgency,
+                    timeout=timeout_ms,
                 )
             else:
-                asyncio.run(
-                    self._notifier.send(
-                        title=request.title,
-                        message=request.message,
-                        urgency=urgency,
-                    )
+                await self._notifier.send(
+                    title=request.title,
+                    message=request.message,
+                    urgency=urgency,
                 )
             return True
 
@@ -202,14 +203,17 @@ def get_default_provider() -> NotificationProvider:
 
 
 # Convenience function with dependency injection support
-def show_notification(
+async def show_notification(
     title: str,
     message: str,
     level: NotificationLevel = NotificationLevel.INFO,
     timeout: int = 10,
     provider: NotificationProvider | None = None,
 ) -> None:
-    """Display notification with simplified interface.
+    """Display notification with simplified async interface.
+
+    Fully async implementation that supports dependency injection and enables
+    better async composition (e.g., parallel notification sending).
 
     Supports dependency injection via optional provider argument.
     If no provider is specified, uses the default provider
@@ -228,14 +232,20 @@ def show_notification(
 
     Examples:
         Standard usage:
-        >>> show_notification("Build Complete", "All tests passed")  # doctest: +SKIP
+        >>> await show_notification("Build Complete", "All tests passed")  # doctest: +SKIP
 
         With severity level:
-        >>> show_notification("Error", "Build failed", level=NotificationLevel.ERROR)  # doctest: +SKIP
+        >>> await show_notification("Error", "Build failed", level=NotificationLevel.ERROR)  # doctest: +SKIP
 
         With custom provider (dependency injection):
         >>> custom = EmailNotificationProvider()  # doctest: +SKIP
-        >>> show_notification("Alert", "Server down", provider=custom)  # doctest: +SKIP
+        >>> await show_notification("Alert", "Server down", provider=custom)  # doctest: +SKIP
+
+        Parallel notifications (async composition):
+        >>> await asyncio.gather(  # doctest: +SKIP
+        ...     show_notification("Task 1", "Complete"),
+        ...     show_notification("Task 2", "Complete"),
+        ... )
 
     Note:
         The timeout parameter is only supported on Linux. On Windows and macOS,
@@ -245,4 +255,4 @@ def show_notification(
     request = NotificationRequest(
         title=title, message=message, level=level, timeout=timeout
     )
-    notification_provider.send_notification(request)
+    await notification_provider.send_notification(request)
